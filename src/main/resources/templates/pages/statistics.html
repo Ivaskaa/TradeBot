@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+
+<html lang="en"
+      class="light-style layout-navbar-fixed layout-menu-fixed"
+      dir="ltr"
+      data-theme="theme-default"
+      data-assets-path="assets/"
+      data-template="vertical-menu-template-no-customizer-starter"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head(~{::title})}">
+  <title th:text="#{statistics.title}">Dental | Statistics</title>
+</head>
+
+<body>
+<!-- Layout wrapper -->
+<div class="layout-wrapper layout-content-navbar">
+  <div class="layout-container">
+    <!-- Menu -->
+
+    <th:block th:insert="~{fragments/sidebar :: sidebar}"></th:block>
+    <!-- / Menu -->
+
+    <!-- Layout container -->
+    <div class="layout-page">
+      <!-- Navbar -->
+
+      <th:block th:insert="~{fragments/navbar :: navbar}"></th:block>
+
+      <!-- / Navbar -->
+
+      <!-- Content wrapper -->
+      <div class="content-wrapper">
+        <!-- Content -->
+
+        <div class="container-xxl flex-grow-1 container-p-y">
+          <h4 class="fw-bold mb-4" th:text="#{statistics.title.mainPage}">Statistics</h4>
+          <div class="row">
+            <div class="col-lg-3 col-sm-6 mb-4">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h5 class="card-title mb-0" th:text="#{statistics.widgets.orders}">Orders</h5>
+                  <div class="badge rounded-pill bg-label-primary p-2">
+                    <i class="ti ti-shopping-cart ti-sm"></i>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <p class="mb-0" th:text="#{statistics.widgets.last7days}">Last 7 days</p>
+                    <h5 class="mb-0" th:text="${widgets.ordersLast7Days != null ? widgets.ordersLast7Days : 0}"></h5>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <p class="mb-0" th:text="#{statistics.widgets.total}">Total</p>
+                    <h5 class="mb-0" th:text="${widgets.ordersTotal != null ? widgets.ordersTotal : 0}" ></h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6 mb-4">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h5 class="card-title mb-0" th:text="#{statistics.widgets.income}">Income</h5>
+                  <div class="badge rounded-pill bg-label-primary p-2">
+                    <i class="ti ti-currency-euro ti-sm"></i>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <p class="mb-0" th:text="#{statistics.widgets.last7days}">Last 7 days</p>
+                    <h5 class="mb-0" th:text="${widgets.incomeLast7Days != null ? widgets.incomeLast7Days : 0}" ></h5>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <p class="mb-0" th:text="#{statistics.widgets.total}">Total</p>
+                    <h5 class="mb-0" th:text="${widgets.incomeTotal != null ? widgets.incomeTotal : 0}" ></h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6 mb-4">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h5 class="card-title mb-0" th:text="#{statistics.widgets.users}">Users</h5>
+                  <div class="badge rounded-pill bg-label-primary p-2">
+                    <i class="ti ti-user ti-sm"></i>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <p class="mb-0" th:text="#{statistics.widgets.last7days}">Last 7 days</p>
+                    <h5 class="mb-0" th:text="${widgets.usersLast7Days != null ? widgets.usersLast7Days : 0}" ></h5>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <p class="mb-0" th:text="#{statistics.widgets.total}">Total</p>
+                    <h5 class="mb-0" th:text="${widgets.usersTotal != null ? widgets.usersTotal : 0}" ></h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6 mb-4">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h5 class="card-title mb-0" th:text="#{statistics.widgets.partners}">Partners</h5>
+                  <div class="badge rounded-pill bg-label-primary p-2">
+                    <i class="ti ti-users ti-sm"></i>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <p class="mb-0" th:text="#{statistics.widgets.last7days}">Last 7 days</p>
+                    <h5 class="mb-0" th:text="${widgets.sellersLast7Days != null ? widgets.sellersLast7Days : 0}" ></h5>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <p class="mb-0" th:text="#{statistics.widgets.total}">Total</p>
+                    <h5 class="mb-0" th:text="${widgets.sellersTotal != null ? widgets.sellersTotal : 0}" ></h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-8 col-md-12 order-last order-lg-first">
+              <div class="row">
+                <div class="col-12 mb-4">
+                  <div class="card">
+                    <div class="card-header header-elements">
+                      <h5 class="card-title mb-0" th:text="#{statistics.charts.order}">Orders</h5>
+                    </div>
+                    <div class="card-body chartHeight">
+                      <canvas id="orders-chart"></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12 mb-4">
+                  <div class="card">
+                    <div class="card-header header-elements">
+                      <h5 class="card-title mb-0" th:text="#{statistics.charts.income}">Income</h5>
+                    </div>
+                    <div class="card-body chartHeight">
+                      <canvas id="income-chart"></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12 mb-4">
+                  <div class="card">
+                    <div class="card-header header-elements">
+                      <h5 class="card-title mb-0" th:text="#{statistics.charts.licenses}">Licenses</h5>
+                    </div>
+                    <div class="card-body chartHeight">
+                      <canvas id="licenses-chart"></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12 mb-4">
+                  <div class="card">
+                    <div class="card-header header-elements">
+                      <h5 class="card-title mb-0" th:text="#{statistics.charts.users}">Users</h5>
+                    </div>
+                    <div class="card-body chartHeight">
+                      <canvas id="users-chart"></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12 mb-4">
+                  <div class="card">
+                    <div class="card-header header-elements">
+                      <h5 class="card-title mb-0" th:text="#{statistics.charts.newPartners}">New partners</h5>
+                    </div>
+                    <div class="card-body chartHeight">
+                      <canvas id="sellers-chart"></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12 mb-4">
+                  <div class="card">
+                    <div class="card-header header-elements">
+                      <h5 class="card-title mb-0" th:text="#{statistics.charts.usingShadeGuide}">Using shade guide</h5>
+                    </div>
+                    <div class="card-body chartHeight">
+                      <canvas id="shade-guide-chart"></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12 mb-4">
+                  <div class="card">
+                    <div class="card-header header-elements">
+                      <h5 class="card-title mb-0" th:text="#{statistics.charts.usingDentalNotation}">Using dental notation</h5>
+                    </div>
+                    <div class="card-body chartHeight">
+                      <canvas id="dental-notation-chart"></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12 mb-4">
+                  <div class="card">
+                    <div class="card-header header-elements">
+                      <h5 class="card-title mb-0" th:text="#{statistics.charts.zoneRating}">Zone rating</h5>
+                    </div>
+                    <div class="card-body chartHeight">
+                      <canvas id="rating-chart"></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12 mb-4">
+                  <div class="card">
+                    <div class="card-header header-elements">
+                      <h5 class="card-title mb-0" th:text="#{statistics.charts.frequencyOfToothAnalysis}">Frequency of tooth analysis (by FDI)</h5>
+                    </div>
+                    <div class="card-body chartHeight">
+                      <canvas id="frequency-chart"></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12 mb-4">
+                  <div class="card">
+                    <div class="card-header header-elements">
+                      <h5 class="card-title mb-0" th:text="#{statistics.charts.manualAdjustmentOfAnalyzes}">Manual adjustment of analyzes</h5>
+                    </div>
+                    <div class="card-body chartHeight">
+                      <canvas id="analyzes-chart"></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12 mb-4">
+                  <div class="card">
+                    <div class="card-header header-elements">
+                      <h5 class="card-title mb-0" th:text="#{statistics.charts.typeOfAnalyzes}">Type of analyzes</h5>
+                    </div>
+                    <div class="card-body chartHeight">
+                      <canvas id="analyzesType-chart"></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-12 mb-4">
+              <div class="card">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-lg-12 col-md-6 col-12 mb-4">
+                      <label for="statisticsDaterange"
+                             class="form-label"
+                             th:text="#{statistics.filter.period}">Select the required period</label>
+                      <input type="text"
+                             class="form-control input-group"
+                             placeholder="Select date range"
+                             id="statisticsDaterange"
+                             readonly="readonly">
+                    </div>
+                    <div class="col-lg-12 col-md-6 col-12">
+                      <label for="statisticsCountry"
+                             class="form-label" th:text="#{statistics.filter.country}">Select country</label>
+                      <select onchange="updateDashboards()" id="statisticsCountry"
+                              class="form-select">
+                        <option th:value="${null}" selected>All</option>
+                        <option th:each="el : ${countries}" th:value="${el.id}" th:text="${el.name}"></option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- / Content -->
+
+        <!-- Footer -->
+        <th:block th:insert="~{fragments/footer :: footer}"></th:block>
+        <!-- / Footer -->
+
+        <div class="content-backdrop fade"></div>
+      </div>
+      <!-- Content wrapper -->
+    </div>
+    <!-- / Layout page -->
+  </div>
+
+  <!-- Overlay -->
+  <div class="layout-overlay layout-menu-toggle"></div>
+
+  <!-- Drag Target Area To SlideIn Menu On Small Screens -->
+  <div class="drag-target"></div>
+</div>
+<!-- / Layout wrapper -->
+
+<th:block th:insert="~{fragments/logout-modal :: logout-modal}"></th:block>
+<th:block th:insert="~{fragments/js :: js}"></th:block>
+
+<!-- Page JS -->
+<script>
+  let urlApp = window.location.protocol + "//" + window.location.host + window.location.pathname;
+
+  $(document).ready(function() {
+    updateDashboards();
+  });
+
+  $(document).on('change', '#statisticsDaterange', function () {
+    const dateInput = $('#statisticsDaterange');
+    if (!$(dateInput).hasClass('active')) {
+      updateDashboards();
+    } else if ($(dateInput).hasClass('active') && $(dateInput).val() === ''){
+      updateDashboards();
+    }
+  });
+
+  let borderColors = [
+      'rgba(115, 103, 240, 1)',
+      'rgba(168, 170, 174, 1)',
+      'rgba(40, 199, 111, 1)',
+      'rgba(234, 84, 85, 1)',
+      'rgba(255, 159, 67, 1)',
+      'rgba(0, 207, 232, 1)',
+      'rgba(75, 75, 75, 1)',
+      'rgba(59, 89, 152, 1)',
+      'rgba(221, 75, 57, 1)',
+      'rgba(225, 48, 108, 1)'];
+  let backgroundColors = [
+      'rgba(115, 103, 240, 0.3)',
+      'rgba(168, 170, 174, 0.3)',
+      'rgba(40, 199, 111, 0.3)',
+      'rgba(234, 84, 85, 0.3)',
+      'rgba(255, 159, 67, 0.3)',
+      'rgba(0, 207, 232, 0.3)',
+      'rgba(75, 75, 75, 0.3)',
+      'rgba(59, 89, 152, 0.3)',
+      'rgba(221, 75, 57, 0.3)',
+      'rgba(225, 48, 108, 0.3)',
+  ]
+
+  function updateDashboards(){
+      let array = [];
+      const $statisticsDaterange = $('#statisticsDaterange');
+      if($($statisticsDaterange).val() !== ''){
+        array = $($statisticsDaterange).val().split(' to ');
+      } else {
+        $($statisticsDaterange).flatpickr({
+          dateFormat: 'd.m.Y',
+          mode: 'range',
+          defaultDate: [new Date().fp_incr(-6), 'today'],
+          maxDate: 'today'
+        });
+        array = $($statisticsDaterange).val().split(' to ');
+      }
+
+      let data = {
+          countryId: $('#statisticsCountry').val(),
+          dateStart: array[0],
+          dateFinish: array[1] === undefined ? array[0] : array[1],
+      }
+
+      $.ajax({
+          type: 'post',
+          url: urlApp + '/getOrderChart',
+          contentType: "application/json; charset=utf-8",
+          data: JSON.stringify(data),
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader($('#_csrf_header').attr('content'), $('#_csrf').attr('content'));
+          }
+      }).done(function (data) {
+          if(!Array.isArray(data)){
+              return;
+          }
+
+          let labels = [];
+          let completed = [];
+          let canceled = [];
+
+          data.forEach((object) => {
+              labels.push(object.date);
+              completed.push(object.completed);
+              canceled.push(object.canceled);
+          })
+
+          if(objectOrderChart !== undefined){
+              objectOrderChart.data.labels = labels;
+              objectOrderChart.data.datasets[0].data = completed;
+              objectOrderChart.data.datasets[1].data = canceled;
+              objectOrderChart.update();
+          }
+          console.log('done /getOrderChart');
+      }).fail(function (response) {
+          console.log('fail /getOrderChart');
+          console.error(response.responseJSON);
+      });
+
+      $.ajax({
+          type: 'post',
+          url: urlApp + '/getIncomeChart',
+          contentType: "application/json; charset=utf-8",
+          data: JSON.stringify(data),
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader($('#_csrf_header').attr('content'), $('#_csrf').attr('content'));
+          }
+      }).done(function (data) {
+          if(!Array.isArray(data)){
+              return;
+          }
+          let labels = [];
+          let income = [];
+
+          data.forEach((object) => {
+              labels.push(object.date);
+              income.push(object.income);
+          })
+
+          if(objectIncomeChart !== undefined){
+              objectIncomeChart.data.labels = labels;
+              objectIncomeChart.data.datasets[0].data = income;
+              objectIncomeChart.update();
+          }
+          console.log('done /getIncomeChart');
+      }).fail(function (response) {
+          console.log('fail /getIncomeChart');
+          console.error(response.responseJSON);
+      });
+
+      $.ajax({
+          type: 'post',
+          url: urlApp + '/getLicenseChart',
+          contentType: "application/json; charset=utf-8",
+          data: JSON.stringify(data),
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader($('#_csrf_header').attr('content'), $('#_csrf').attr('content'));
+          }
+      }).done(function (data) {
+          if(!Array.isArray(data)){
+              return;
+          }
+          let labels = [];
+          let payments = [];
+          let inactive = [];
+
+          data.forEach((object) => {
+              labels.push(object.date);
+              payments.push(object.payments);
+              inactive.push(object.inactive);
+          })
+
+          if(objectLicensesChart !== undefined){
+              objectLicensesChart.data.labels = labels;
+              objectLicensesChart.data.datasets[0].data = payments;
+              objectLicensesChart.data.datasets[1].data = inactive;
+              objectLicensesChart.update();
+          }
+          console.log('done /getLicenseChart');
+      }).fail(function (response) {
+          console.log('fail /getLicenseChart');
+          console.error(response.responseJSON);
+      });
+
+      $.ajax({
+          type: 'post',
+          url: urlApp + '/getUserChart',
+          contentType: "application/json; charset=utf-8",
+          data: JSON.stringify(data),
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader($('#_csrf_header').attr('content'), $('#_csrf').attr('content'));
+          }
+      }).done(function (data) {
+          if(!Array.isArray(data)){
+              return;
+          }
+          let labels = [];
+          let active = [];
+          let blocked = [];
+
+          data.forEach((object) => {
+              labels.push(object.date);
+              active.push(object.active);
+              blocked.push(object.blocked);
+          })
+
+          if(objectUsersChart !== undefined){
+              objectUsersChart.data.labels = labels;
+              objectUsersChart.data.datasets[0].data = active;
+              objectUsersChart.data.datasets[1].data = blocked;
+              objectUsersChart.update();
+          }
+          console.log('done /getUserChart');
+      }).fail(function (response) {
+          console.log('fail /getUserChart');
+          console.error(response.responseJSON);
+      });
+
+      $.ajax({
+          type: 'post',
+          url: urlApp + '/getSellerChart',
+          contentType: "application/json; charset=utf-8",
+          data: JSON.stringify(data),
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader($('#_csrf_header').attr('content'), $('#_csrf').attr('content'));
+          }
+      }).done(function (data) {
+          if(!Array.isArray(data)){
+              return;
+          }
+          let labels = [];
+          let dealer = [];
+          let association = [];
+
+          data.forEach((object) => {
+              labels.push(object.date);
+              dealer.push(object.dealer);
+              association.push(object.association);
+          })
+
+          if(objectSellersChart !== undefined){
+              objectSellersChart.data.labels = labels;
+              objectSellersChart.data.datasets[0].data = dealer;
+              objectSellersChart.data.datasets[1].data = association;
+              objectSellersChart.update();
+          }
+          console.log('done /getSellerChart');
+      }).fail(function (response) {
+          console.log('fail /getSellerChart');
+          console.error(response.responseJSON);
+      });
+
+      $.ajax({
+          type: 'post',
+          url: urlApp + '/getUsingShadeGuideChart',
+          contentType: "application/json; charset=utf-8",
+          data: JSON.stringify(data),
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader($('#_csrf_header').attr('content'), $('#_csrf').attr('content'));
+          }
+      }).done(function (data) {
+          if(!Array.isArray(data)){
+              return;
+          }
+          let labels = [];
+          let names = [];
+          let objects = [];
+
+          data.forEach((object) => {
+              labels.push(object.date);
+              object.objects.forEach((object2) => {
+                  if(!names.includes(object2.name)){
+                      names.push(object2.name);
+                  }
+                  objects.push(object2);
+              })
+          })
+
+          if(objectShadeGuideChart !== undefined){
+              objectShadeGuideChart.data.labels = labels;
+              objectShadeGuideChart.data.datasets = [];
+              $.each(names, function (index, name) {
+                  let ratings = [];
+                  objects.forEach((object) => {
+                      if(name === object.name){
+                          ratings.push(object.rating)
+                      }
+                  })
+                  let dataset = {};
+                  dataset.label = name;
+                  dataset.data = ratings;
+                  dataset.fill = true
+                  dataset.borderColor = borderColors[index % 10];
+                  dataset.backgroundColor = backgroundColors[index % 10];
+                  dataset.borderWidth = 1;
+                  objectShadeGuideChart.data.datasets.push(dataset);
+              });
+              objectShadeGuideChart.update();
+          }
+          console.log('done /getUsingShadeGuideChart');
+      }).fail(function (response) {
+          console.log('fail /getUsingShadeGuideChart');
+          console.error(response.responseJSON);
+      });
+
+      $.ajax({
+          type: 'post',
+          url: urlApp + '/getDentalNotationChart',
+          contentType: "application/json; charset=utf-8",
+          data: JSON.stringify(data),
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader($('#_csrf_header').attr('content'), $('#_csrf').attr('content'));
+          }
+      }).done(function (data) {
+          if(!Array.isArray(data)){
+              return;
+          }
+          let labels = [];
+          let names = [];
+          let objects = [];
+
+          data.forEach((object) => {
+              labels.push(object.date);
+              object.objects.forEach((object2) => {
+                  if(!names.includes(object2.name)){
+                      names.push(object2.name);
+                  }
+                  objects.push(object2);
+              })
+          })
+
+          if(objectDentalNotationChart !== undefined){
+              objectDentalNotationChart.data.labels = labels;
+              objectDentalNotationChart.data.datasets = [];
+              $.each(names, function (index, name) {
+                  let ratings = [];
+                  objects.forEach((object) => {
+                      if(name === object.name){
+                          ratings.push(object.count)
+                      }
+                  })
+                  let dataset = {};
+                  dataset.label = name;
+                  dataset.data = ratings;
+                  dataset.fill = true
+                  dataset.borderColor = borderColors[index % 10];
+                  dataset.backgroundColor = backgroundColors[index % 10];
+                  dataset.borderWidth = 1;
+                  objectDentalNotationChart.data.datasets.push(dataset);
+              });
+              objectDentalNotationChart.update();
+          }
+          console.log('done /getDentalNotationChart');
+      }).fail(function (response) {
+          console.log('fail /getDentalNotationChart');
+          console.error(response.responseJSON);
+      });
+
+      $.ajax({
+          type: 'post',
+          url: urlApp + '/getZonesChart',
+          contentType: "application/json; charset=utf-8",
+          data: JSON.stringify(data),
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader($('#_csrf_header').attr('content'), $('#_csrf').attr('content'));
+          }
+      }).done(function (data) {
+          if(!Array.isArray(data)){
+              return;
+          }
+
+          if(objectRatingChart !== undefined){
+              objectRatingChart.data.datasets = [];
+              for(let i = 0; i < data.length; i++){
+                  let dataset = {};
+                  dataset.label = data[i].name;
+                  dataset.data = [data[i].rating]
+                  dataset.fill = true
+                  dataset.borderColor = borderColors[i];
+                  dataset.backgroundColor = backgroundColors[i];
+                  objectRatingChart.data.datasets.push(dataset);
+              }
+              objectRatingChart.update();
+          }
+          console.log('done /getZonesChart');
+      }).fail(function (response) {
+          console.log('fail /getZonesChart');
+          console.error(response.responseJSON);
+      });
+
+      $.ajax({
+          type: 'post',
+          url: urlApp + '/getTeethChart',
+          contentType: "application/json; charset=utf-8",
+          data: JSON.stringify(data),
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader($('#_csrf_header').attr('content'), $('#_csrf').attr('content'));
+          }
+      }).done(function (data) {
+          if(!Array.isArray(data)){
+              return;
+          }
+
+          if(objectFrequencyChart !== undefined){
+              objectFrequencyChart.data.datasets = [];
+              for(let i = 0; i < data.length; i++){
+                  let dataset = {};
+                  dataset.label = data[i].number;
+                  dataset.data = [data[i].rating];
+                  dataset.fill = true
+                  dataset.borderColor = borderColors[i % 10];
+                  dataset.backgroundColor = backgroundColors[i % 10];
+                  objectFrequencyChart.data.datasets.push(dataset);
+              }
+              objectFrequencyChart.update();
+          }
+          console.log('done /getTeethChart');
+      }).fail(function (response) {
+          console.log('fail /getTeethChart');
+          console.error(response.responseJSON);
+      });
+
+      $.ajax({
+          type: 'post',
+          url: urlApp + '/getManualAdjustmentChart',
+          contentType: "application/json; charset=utf-8",
+          data: JSON.stringify(data),
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader($('#_csrf_header').attr('content'), $('#_csrf').attr('content'));
+          }
+      }).done(function (data) {
+          if(!Array.isArray(data)){
+              return;
+          }
+          let labels = [];
+          let count = [];
+
+          data.forEach((object) => {
+              labels.push(object.name);
+              count.push(object.count);
+          })
+
+          if(objectAnalyzesChart !== undefined){
+              objectAnalyzesChart.data.labels = labels;
+              objectAnalyzesChart.data.datasets[0].data = count;
+              objectAnalyzesChart.data.datasets[0].backgroundColor = backgroundColors;
+              objectAnalyzesChart.update();
+          }
+          console.log('done /getManualAdjustmentChart');
+      }).fail(function (response) {
+          console.log('fail /getManualAdjustmentChart');
+          console.error(response.responseJSON);
+      });
+
+      $.ajax({
+          type: 'post',
+          url: urlApp + '/getTypeOfAnalyzesChart',
+          contentType: "application/json; charset=utf-8",
+          data: JSON.stringify(data),
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader($('#_csrf_header').attr('content'), $('#_csrf').attr('content'));
+          }
+      }).done(function (data) {
+          let labels = [];
+          let chartData = [];
+          if(data.colorMeasuring !== 0){
+              chartData.push(data.colorMeasuring);
+              labels.push('ColorMeasuring')
+          }
+          if(data.whitening !== 0){
+              chartData.push(data.whitening)
+              labels.push('Whitening')
+          }
+
+          if(objectAnalyzesTypeChart !== undefined){
+              objectAnalyzesTypeChart.data.labels = labels;
+              objectAnalyzesTypeChart.data.datasets[0].data = chartData;
+              objectAnalyzesTypeChart.data.datasets[0].backgroundColor = backgroundColors;
+              objectAnalyzesTypeChart.update();
+          }
+          console.log('done /getTypeOfAnalyzesChart');
+      }).fail(function (response) {
+          console.log('fail /getTypeOfAnalyzesChart');
+          console.error(response.responseJSON);
+      });
+  }
+
+</script>
+
+</body>
+
+</html>
