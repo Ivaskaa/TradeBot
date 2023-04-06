@@ -1,5 +1,8 @@
 package com.example.TradeBot;
 
+import com.example.TradeBot.dto.item.ItemFromParser;
+import com.example.TradeBot.dto.request.RequestListOfItems;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
@@ -18,84 +21,31 @@ import java.net.URI;
 @AllArgsConstructor
 public class Init implements CommandLineRunner {
 
+    private final ObjectMapper objectMapper;
 
     @Override
     public void run(String... args) throws Exception {
         log.info("################## START OF INITIALIZATION ##################");
 
-        String apiKey = "349B231D049DC4DCA51D085EE9A8008B";
-        String steamId = "39041850239856029736598342";
-        String appId = "730"; // ідентифікатор додатку CS:GO
-        String contextId = "2"; // ідентифікатор контексту інвентаря
-        String language = "en"; // мова запиту
+        Integer offset = 2000;
 
-        HttpClient httpClient = HttpClientBuilder.create().build();
-        URIBuilder uriBuilder = new URIBuilder("https://steamcommunity.com/id/398246592304682534098234/inventory/json/730/2");
-//        uriBuilder.setParameter("appid", appId);
-//        uriBuilder.setParameter("key", apiKey);
-//        uriBuilder.setParameter("steamid", steamId);
+        for(;offset <= 3000; offset+= 60){
+            HttpClient httpClient = HttpClientBuilder.create().build();
+            URIBuilder uriBuilder = new URIBuilder("https://inventories.cs.money/5.0/load_bots_inventory/730?limit=60&offset="+ offset +"&order=asc&priceWithBonus=30&sort=price&type=3&withStack=true");
 
-//        HttpClient httpClient = HttpClientBuilder.create().build();
-//        URIBuilder uriBuilder = new URIBuilder("http://api.steampowered.com/ISteamEconomy/GetAssetPrices/v0001/?appid=440&key=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX&format=xml");
-//        uriBuilder.setParameter("appid", appId);
-//        uriBuilder.setParameter("key", apiKey);
-//        uriBuilder.setParameter("steamid", steamId);
-
-        URI uri = uriBuilder.build();
-        System.out.println(uriBuilder);
-        HttpGet httpGet = new HttpGet(uri);
-        HttpResponse response = httpClient.execute(httpGet);
-        String responseBody = EntityUtils.toString(response.getEntity());
-
-        System.out.println(responseBody);
-
-
-//        SteamWebApiClient.SteamWebApiClientBuilder steamWebApiClientBuilder = new SteamWebApiClient.SteamWebApiClientBuilder(apiKey);
-//        SteamWebApiClient client = new SteamWebApiClient(steamWebApiClientBuilder);
-//        SteamWebApiInterfaceMethod method = SteamWebApiInterfaceMethod.GET_GAME_ITEMS;
-//
-//        SteamWebApiRequest request = new SteamWebApiRequest.Builder()
-//                .withInterface(SteamWebApiInterface.I_STEAM_USER_INVENTORY)
-//                .withMethod(method)
-//                .addParameter("steamid", steamId)
-//                .addParameter("appid", appId)
-//                .addParameter("contextid", contextId)
-//                .build();
-//
-//        SteamWebApiResponse response = client.processRequest(request);
-//        String jsonString = response.getBody();
-
-////        SteamWeb steamWeb = new SteamWeb("yourSteamId", "yourSteamWebApiKey");
-//
-//        String apiKey = "YOUR_API_KEY";
-//        String steamId = "YOUR_API_KEY";
-//        SteamWebApiInterface steamWebApiInterface = new SteamWebApiInterface(apiKey);
-//
-//        String appId = "730"; // appId для CS:GO
-//        String contextId = "2"; // contextId для інвентаря
-//        int count = 5000; // кількість предметів, яку потрібно отримати
-//
-//        String jsonResponse = steamWebApiInterface.getPlayerInventory(
-//                steamId,
-//                appId,
-//                contextId,
-//                count
-//        );
-//
-//// Парсинг JSON
-//        JSONObject jsonObject = new JSONObject(jsonResponse);
-//        JSONArray itemsArray = jsonObject.getJSONObject("rgInventory").toJSONArray();
-//
-//        for (int i = 0; i < itemsArray.length(); i++) {
-//            JSONObject itemObject = itemsArray.getJSONObject(i);
-//            String itemId = itemObject.getString("id");
-//            String itemName = itemObject.getString("name");
-//            // додаткові поля можна отримати з об'єкту itemObject
-//        }
-//
-//
-////        SteamWebApiClient.SteamWebApiClientBuilder clientBuilder = new SteamWebApiClient.SteamWebApiClientBuilder("398246592304682534098234");
-////        SteamWebApiClient steamWebAPI = clientBuilder.build();
+            URI uri = uriBuilder.build();
+            HttpGet httpGet = new HttpGet(uri);
+            HttpResponse response = httpClient.execute(httpGet);
+            RequestListOfItems requestListOfItems = objectMapper.readValue(EntityUtils.toString(response.getEntity()), RequestListOfItems.class);
+            for (ItemFromParser item : requestListOfItems.getItems()){
+                if(item != null){
+                    if(item.getOverprice() == null && !item.isHasTradeLock() && !item.isHasHighDemand()) {
+                        System.out.println(item);
+                    }
+                }
+            }
+            Thread.sleep(300);
+        }
 
         log.info("################## END OF INITIALIZATION ##################");
     }
