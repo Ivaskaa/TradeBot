@@ -1,0 +1,19 @@
+<footer class="content-footer footer bg-footer-theme" th:fragment="footer">
+    <div class="container-xxl">
+        <div class="footer-container d-flex align-items-center justify-content-between py-2 flex-md-row flex-column">
+            <div>
+                &copy;
+                <script>
+                    document.write(new Date().getFullYear());
+                </script>
+                [(#{app.footer.text.beforeHeart})]
+                ❤️
+                [(#{app.footer.text.afterHeart})]
+                <a href="https://avada-media.ua/ua/"
+                   target="_blank"
+                   class="fw-semibold"
+                   th:text="#{app.footer.title}">Avada Media</a>
+            </div>
+        </div>
+    </div>
+</footer>

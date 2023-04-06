@@ -1,0 +1,37 @@
+<th:block th:fragment="logout-modal">
+    <!-- Modals -->
+    <div class="modal fade"
+         id="logOutModal"
+         tabindex="-1"
+         aria-hidden="true">
+        <div class="modal-dialog modal-sm"
+             role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" th:text="#{app.header.profile.logout}">Log out</h5>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body" th:text="#{app.modal.logout.text}">Are you sure you want to log out of your profile?</div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-label-secondary waves-effect"
+                            data-bs-dismiss="modal"
+                            th:text="#{app.modal.logout.cancel}">
+                        Cancel
+                    </button>
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" href="/login"
+                                class="btn btn-primary waves-effect waves-light"
+                                th:text="#{app.header.profile.logout}">
+                            Log out
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- / Modals -->
+</th:block>

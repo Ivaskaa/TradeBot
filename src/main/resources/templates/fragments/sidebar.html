@@ -1,0 +1,97 @@
+<aside id="layout-menu"
+       class="layout-menu menu-vertical menu bg-menu-theme" th:fragment="sidebar">
+    <div class="app-brand demo">
+        <a href="/"
+           class="app-brand-link">
+            <span class="app-brand-logo">
+              <img src="/assets/img/logo.svg"
+                   class="img-fluid"
+                   alt="logo">
+            </span>
+            <span class="app-brand-text menu-text fw-bold text-uppercase">Dental Shades<br>
+              <small class="fw-normal">Avenue</small>
+            </span>
+        </a>
+
+        <a href="javascript:void(0);"
+           class="layout-menu-toggle menu-link text-large ms-auto">
+            <i class="ti menu-toggle-icon d-none d-xl-block ti-sm align-middle"></i>
+            <i class="ti ti-x d-block d-xl-none ti-sm align-middle"></i>
+        </a>
+    </div>
+
+    <div class="menu-inner-shadow"></div>
+
+    <ul class="menu-inner py-1">
+        <!-- Page -->
+        <li class="menu-item">
+            <a href="/statistics"
+               class="menu-link">
+                <i class="menu-icon tf-icons ti ti-chart-bar"></i>
+                <div data-i18n="Statistics" th:text="#{app.sidebar.statistics}">Statistics</div>
+            </a>
+        </li>
+        <li class="menu-item">
+            <a href="/orders"
+               class="menu-link">
+                <i class="menu-icon tf-icons ti ti-shopping-cart"></i>
+                <div data-i18n="Orders" th:text="#{app.sidebar.orders}">Orders</div>
+            </a>
+        </li>
+        <li class="menu-item">
+            <a href="/users"
+               class="menu-link">
+                <i class="menu-icon tf-icons ti ti-user"></i>
+                <div data-i18n="Users" th:text="#{app.sidebar.users}">Users</div>
+            </a>
+        </li>
+        <li class="menu-item">
+            <a href="/licenses"
+               class="menu-link">
+                <i class="menu-icon tf-icons ti ti-file-certificate"></i>
+                <div data-i18n="Licenses" th:text="#{app.sidebar.licenses}">Licenses</div>
+            </a>
+        </li>
+        <li class="menu-item">
+            <a href="/partners"
+               class="menu-link">
+                <i class="menu-icon tf-icons ti ti-users"></i>
+                <div data-i18n="Sellers" th:text="#{app.sidebar.partners}">Partners</div>
+            </a>
+        </li>
+        <hr class="w-100 bg-label-secondary">
+        <li class="menu-item">
+            <a role="button"
+               class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-settings"></i>
+                <div data-i18n="Settings" th:text="#{app.sidebar.settings}">Settings</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="/settings/contacts"
+                       class="menu-link">
+                        <div data-i18n="Contacts" th:text="#{app.sidebar.settings.supportContacts}">Support contacts</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/settings/app-information"
+                       class="menu-link">
+                        <div data-i18n="App information" th:text="#{app.sidebar.settings.appInformation}">App information</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/settings/color-masters"
+                       class="menu-link">
+                        <div data-i18n="Color masters" th:text="#{app.sidebar.settings.colorMasters}">Color masters</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/settings/shade-guides"
+                       class="menu-link">
+                        <div data-i18n="Shade guides" th:text="#{app.sidebar.settings.shadeGuides}">Shade guides</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</aside>

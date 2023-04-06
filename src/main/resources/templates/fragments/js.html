@@ -1,0 +1,227 @@
+<th:block th:fragment="js">
+    <!-- Core JS -->
+    <!-- build:js assets/vendor/js/core.js -->
+    <script src="/assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="/assets/vendor/libs/popper/popper.js"></script>
+    <script src="/assets/vendor/js/bootstrap.js"></script>
+    <script src="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="/assets/vendor/libs/node-waves/node-waves.js"></script>
+
+    <script src="/assets/vendor/libs/hammer/hammer.js"></script>
+
+    <script src="/assets/vendor/js/menu.js"></script>
+    <!-- endbuild -->
+
+    <!-- Vendors JS -->
+    <script src="/assets/vendor/libs/flatpickr/flatpickr.js"></script>
+    <script src="/assets/vendor/libs/select2/select2.js"></script>
+    <script src="/assets/vendor/libs/chartjs/chartjs.js"></script>
+    <script src="/assets/vendor/libs/chartjs/chartjs-plugin-datalabels.min.js"></script>
+    <script src="/assets/vendor/libs/clipboard/clipboard.js"></script>
+    <script src="/assets/vendor/libs/sortablejs/sortable.js"></script>
+    <script src="/assets/vendor/libs/intlTelinput/intlTelInput.min.js"></script>
+
+    <!-- Main JS -->
+    <script src="/assets/js/main.js"></script>
+    <script src="/assets/js/custom.js"></script>
+
+    <!-- Websocket JS -->
+    <script src="/js/sockjs-client/sockjs.min.js"></script>
+    <script src="/js/stomp.js/stomp.min.js"></script>
+    <script src="/js/navbar-notifications.js"></script>
+
+    <!-- Sidebar tab activating -->
+    <script type="application/javascript">
+        $(function () {
+            const url = window.location;
+            $('ul.menu-inner a').filter(function () {
+                if (this.href) return this.href === url || url.href.indexOf(this.href) === 0;
+            }).parent('li.menu-item').addClass('active')
+            // for the treeview
+            $('ul.menu-inner ul.menu-sub a').filter(function () {
+                if (this.href) return this.href === url || url.href.indexOf(this.href) === 0;
+            }).parents('ul.menu-sub').parents('li.menu-item').addClass('active open')
+        });
+    </script>
+
+    <!-- Common scripts -->
+    <script type="application/javascript">
+        let notificationTranslate = "[[#{app.header.notification}]]";
+        let clearTranslate = "[[#{app.header.notification.clear}]]";
+        let noData = "[[#{app.table.noData}]]";
+        let firstDayOfWeek = "[[#{flatpickr.firstDayOfWeek}]]";
+        let longhandSunday = "[[#{flatpickr.days.Sunday.longhand}]]";
+        let longhandMonday = "[[#{flatpickr.days.Monday.longhand}]]";
+        let longhandTuesday = "[[#{flatpickr.days.Tuesday.longhand}]]";
+        let longhandWednesday = "[[#{flatpickr.days.Wednesday.longhand}]]";
+        let longhandThursday = "[[#{flatpickr.days.Thursday.longhand}]]";
+        let longhandFriday = "[[#{flatpickr.days.Friday.longhand}]]";
+        let longhandSaturday = "[[#{flatpickr.days.Saturday.longhand}]]";
+        let shorthandSunday = "[[#{flatpickr.days.Sunday.shorthand}]]";
+        let shorthandMonday = "[[#{flatpickr.days.Monday.shorthand}]]";
+        let shorthandTuesday = "[[#{flatpickr.days.Tuesday.shorthand}]]";
+        let shorthandWednesday = "[[#{flatpickr.days.Wednesday.shorthand}]]";
+        let shorthandThursday = "[[#{flatpickr.days.Thursday.shorthand}]]";
+        let shorthandFriday = "[[#{flatpickr.days.Friday.shorthand}]]";
+        let shorthandSaturday = "[[#{flatpickr.days.Saturday.shorthand}]]";
+        let longhandJanuary = "[[#{flatpickr.months.January.longhand}]]";
+        let longhandFebruary = "[[#{flatpickr.months.February.longhand}]]";
+        let longhandMarch = "[[#{flatpickr.months.March.longhand}]]";
+        let longhandApril = "[[#{flatpickr.months.April.longhand}]]";
+        let longhandMay = "[[#{flatpickr.months.May.longhand}]]";
+        let longhandJune = "[[#{flatpickr.months.June.longhand}]]";
+        let longhandJuly = "[[#{flatpickr.months.July.longhand}]]";
+        let longhandAugust = "[[#{flatpickr.months.August.longhand}]]";
+        let longhandSeptember = "[[#{flatpickr.months.September.longhand}]]";
+        let longhandOctober = "[[#{flatpickr.months.October.longhand}]]";
+        let longhandNovember = "[[#{flatpickr.months.November.longhand}]]";
+        let longhandDecember = "[[#{flatpickr.months.December.longhand}]]";
+        let shorthandJanuary = "[[#{flatpickr.months.January.longhand}]]";
+        let shorthandFebruary = "[[#{flatpickr.months.February.longhand}]]";
+        let shorthandMarch = "[[#{flatpickr.months.March.longhand}]]";
+        let shorthandApril = "[[#{flatpickr.months.April.longhand}]]";
+        let shorthandMay = "[[#{flatpickr.months.May.longhand}]]";
+        let shorthandJune = "[[#{flatpickr.months.June.longhand}]]";
+        let shorthandJuly = "[[#{flatpickr.months.July.longhand}]]";
+        let shorthandAugust = "[[#{flatpickr.months.August.longhand}]]";
+        let shorthandSeptember = "[[#{flatpickr.months.September.longhand}]]";
+        let shorthandOctober = "[[#{flatpickr.months.October.longhand}]]";
+        let shorthandNovember = "[[#{flatpickr.months.November.longhand}]]";
+        let shorthandDecember = "[[#{flatpickr.months.December.longhand}]]";
+
+        //  Get Id of object from URL
+        function getIdFromUrl() {
+            const url = window.location.pathname;
+            return url.substring(url.lastIndexOf('/') + 1);
+        }
+
+        //  Error message template
+        function errorMessage(selector, message) {
+            $(selector).addClass('is-invalid');
+            $(selector).after('<div class="invalid-feedback">' + message + '</div>');
+        }
+
+        //  Remove all error messages
+        function clearErrorMessages() {
+            $('input.is-invalid, textarea.is-invalid').removeClass('is-invalid');
+            $('div.invalid-feedback').remove();
+        }
+
+        //  Drawing table
+        function createTable(tableSelector, itemsCount, pagesCount, pageIndex) {
+            const TABLE_DIV = $(tableSelector);
+            const TABLE_HEAD = $(TABLE_DIV).find('thead');
+            const TABLE_BODY = $(TABLE_DIV).find('tbody');
+            const TABLE_COLUMNS_COUNT = $(TABLE_HEAD).find('th').length;
+            const TABLE_PAGINATION_ROW = $(TABLE_DIV).next('div.card-body').find('div.row');
+            $(TABLE_BODY).empty();
+            $(TABLE_PAGINATION_ROW).empty();
+            if (itemsCount <= 0) {
+                $(TABLE_BODY).append(
+                    '<tr>' +
+                    '    <td colspan="' + TABLE_COLUMNS_COUNT + '" class="align-middle text-center no-data">' +
+                    noData +
+                    '    </td>' +
+                    '</tr>'
+                );
+            }
+            if (pagesCount > 1) {
+                createPagination(pagesCount, pageIndex, TABLE_PAGINATION_ROW);
+            }
+            return TABLE_BODY;
+        }
+
+        function createPagination(pagesCount, pageIndex, TABLE_PAGINATION_ROW) {
+            pagesCount = Number(pagesCount);
+            pageIndex = Number(pageIndex);
+            const paginationList =
+                '<ul class="pagination pagination-sm mb-0 justify-content-center justify-content-md-end align-items-center">' +
+                '</ul>';
+            const collapsedPageBtn =
+                '   <li class="page-item">' +
+                '       <a class="page-link waves-effect disabled" role="button">...</a>' +
+                '   </li>';
+
+            $(TABLE_PAGINATION_ROW).append(paginationList);
+            const paginationListPath = $(TABLE_PAGINATION_ROW).find('ul.pagination');
+
+            if (pagesCount > 1) {
+                if (pageIndex !== 1) {
+                    $(paginationListPath).append(createPrevNextPageBtn(false, true));
+                    $(paginationListPath).append(createPageBtn(1, false));
+                } else {
+                    $(paginationListPath).append(createPrevNextPageBtn(true, true));
+                    $(paginationListPath).append(createPageBtn(1, true));
+                }
+
+                if (pagesCount > 7) {
+                    if (pageIndex >= 5) {
+                        $(paginationListPath).append(collapsedPageBtn);
+                    }
+
+                    let start;
+                    let finish;
+                    if (pageIndex < 5) {
+                        start = 2;
+                        finish = 5;
+                    } else if (pagesCount - pageIndex < 4) {
+                        start = pagesCount - 4;
+                        finish = pagesCount - 1;
+                    } else {
+                        start = pageIndex - 1;
+                        finish = pageIndex + 1;
+                    }
+                    for (let i = start; i <= finish; i++) {
+                        if (i > 1 && i <= pagesCount - 1) {
+                            if (pageIndex === i) {
+                                $(paginationListPath).append(createPageBtn(i, true));
+                            } else {
+                                $(paginationListPath).append(createPageBtn(i, false));
+                            }
+                        }
+                    }
+
+                    if (pagesCount - pageIndex >= 4) {
+                        $(paginationListPath).append(collapsedPageBtn);
+                    }
+                } else {
+                    for (let i = 2; i <= pagesCount - 1; i++) {
+                        if (pageIndex === i) {
+                            $(paginationListPath).append(createPageBtn(i, true));
+                        } else {
+                            $(paginationListPath).append(createPageBtn(i, false));
+                        }
+                    }
+                }
+
+                if (pageIndex !== pagesCount) {
+                    $(paginationListPath).append(createPageBtn(pagesCount, false));
+                    $(paginationListPath).append(createPrevNextPageBtn(false, false));
+                } else {
+                    $(paginationListPath).append(createPageBtn(pagesCount, true));
+                    $(paginationListPath).append(createPrevNextPageBtn(true, false));
+                }
+            }
+        }
+
+        //  Create Next previous triangle Btn
+        function createPrevNextPageBtn(isDisabled, isPrev) {
+            return '' +
+                '   <li class="page-item ' + (isPrev ? 'prev' : 'next') + '">' +
+                '       <a class="page-link waves-effect ' + (isDisabled ? 'disabled' : '') + '" role="button">' +
+                '           <i class="ti ti-chevron-' + (isPrev ? 'left' : 'right') + ' ti-xs"></i>' +
+                '       </a>' +
+                '   </li>';
+        }
+
+        //  Create Pagination Btn
+        function createPageBtn(pageNumber, isActive) {
+            return '' +
+                '<li class="page-item ' + (isActive ? 'active' : '') + '">' +
+                '   <a class="page-link waves-effect" role="button">' + pageNumber + '</a>' +
+                '</li>';
+        }
+
+    </script>
+
+</th:block>
