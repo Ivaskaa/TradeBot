@@ -5,7 +5,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/trade_bot?createDatabaseIfNotExist=true
-    username: Ivaska
+    username: username
     password: password
   jpa:
     show-sql: true
