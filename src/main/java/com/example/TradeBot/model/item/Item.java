@@ -17,8 +17,7 @@ public class Item {
     private String shortName;
     private String quality; // 2 букви якості
     private boolean isStatTrak;
-    private LocalDateTime purchaseDate;
-    private boolean hasTradeLock;
+    private LocalDateTime date;
     private Float price;
     //region type values
     // 1 - ключі
