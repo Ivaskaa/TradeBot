@@ -94,7 +94,14 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
-			<version>4.3.0</version>
+			<version>3.141.5</version>
+		</dependency>
+
+		<!-- webdrivermanager download google driver manager, need for correct work selenium-java -->
+		<dependency>
+			<groupId>io.github.bonigarcia</groupId>
+			<artifactId>webdrivermanager</artifactId>
+			<version>4.4.3</version>
 		</dependency>
 
 	</dependencies>

@@ -14,6 +14,7 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false)
     private Long id;
+    private Long csMoneyId;
     private String shortName;
     private String quality; // 2 букви якості
     private boolean isStatTrak;

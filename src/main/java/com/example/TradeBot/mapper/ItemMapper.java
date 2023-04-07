@@ -11,15 +11,12 @@ public class ItemMapper {
 
     public Item itemFromParserToItem(ItemFromParser itemFromParser){
         Item item = new Item();
-        item.setId(itemFromParser.getId());
+        item.setCsMoneyId(itemFromParser.getId());
         item.setShortName(itemFromParser.getShortName());
         item.setQuality(itemFromParser.getQuality());
         item.setStatTrak(itemFromParser.isStatTrak());
-        item.setDate(LocalDateTime.now());
         item.setPrice(itemFromParser.getPrice());
         item.setType(itemFromParser.getType());
-
-
         return item;
     }
 }

@@ -9,7 +9,7 @@
       xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{fragments/head :: head(~{::title})}">
-  <title th:text="#{statistics.title}">Dental | Statistics</title>
+  <title>Statistics</title>
 </head>
 
 <body>
@@ -34,24 +34,24 @@
         <!-- Content -->
 
         <div class="container-xxl flex-grow-1 container-p-y">
-          <h4 class="fw-bold mb-4" th:text="#{statistics.title.mainPage}">Statistics</h4>
+          <h4 class="fw-bold mb-4">Statistics</h4>
           <div class="row">
             <div class="col-lg-3 col-sm-6 mb-4">
               <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                  <h5 class="card-title mb-0" th:text="#{statistics.widgets.orders}">Orders</h5>
+                  <h5 class="card-title mb-0">Orders</h5>
                   <div class="badge rounded-pill bg-label-primary p-2">
                     <i class="ti ti-shopping-cart ti-sm"></i>
                   </div>
                 </div>
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-center mb-3">
-                    <p class="mb-0" th:text="#{statistics.widgets.last7days}">Last 7 days</p>
-                    <h5 class="mb-0" th:text="${widgets.ordersLast7Days != null ? widgets.ordersLast7Days : 0}"></h5>
+                    <p class="mb-0">Last 7 days</p>
+                    <h5 class="mb-0"></h5>
                   </div>
                   <div class="d-flex justify-content-between align-items-center">
-                    <p class="mb-0" th:text="#{statistics.widgets.total}">Total</p>
-                    <h5 class="mb-0" th:text="${widgets.ordersTotal != null ? widgets.ordersTotal : 0}" ></h5>
+                    <p class="mb-0">Total</p>
+                    <h5 class="mb-0"></h5>
                   </div>
                 </div>
               </div>
@@ -60,19 +60,19 @@
             <div class="col-lg-3 col-sm-6 mb-4">
               <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                  <h5 class="card-title mb-0" th:text="#{statistics.widgets.income}">Income</h5>
+                  <h5 class="card-title mb-0">Income</h5>
                   <div class="badge rounded-pill bg-label-primary p-2">
                     <i class="ti ti-currency-euro ti-sm"></i>
                   </div>
                 </div>
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-center mb-3">
-                    <p class="mb-0" th:text="#{statistics.widgets.last7days}">Last 7 days</p>
-                    <h5 class="mb-0" th:text="${widgets.incomeLast7Days != null ? widgets.incomeLast7Days : 0}" ></h5>
+                    <p class="mb-0">Last 7 days</p>
+                    <h5 class="mb-0"></h5>
                   </div>
                   <div class="d-flex justify-content-between align-items-center">
-                    <p class="mb-0" th:text="#{statistics.widgets.total}">Total</p>
-                    <h5 class="mb-0" th:text="${widgets.incomeTotal != null ? widgets.incomeTotal : 0}" ></h5>
+                    <p class="mb-0">Total</p>
+                    <h5 class="mb-0"></h5>
                   </div>
                 </div>
               </div>
@@ -81,19 +81,19 @@
             <div class="col-lg-3 col-sm-6 mb-4">
               <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                  <h5 class="card-title mb-0" th:text="#{statistics.widgets.users}">Users</h5>
+                  <h5 class="card-title mb-0">Users</h5>
                   <div class="badge rounded-pill bg-label-primary p-2">
                     <i class="ti ti-user ti-sm"></i>
                   </div>
                 </div>
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-center mb-3">
-                    <p class="mb-0" th:text="#{statistics.widgets.last7days}">Last 7 days</p>
-                    <h5 class="mb-0" th:text="${widgets.usersLast7Days != null ? widgets.usersLast7Days : 0}" ></h5>
+                    <p class="mb-0">Last 7 days</p>
+                    <h5 class="mb-0"></h5>
                   </div>
                   <div class="d-flex justify-content-between align-items-center">
-                    <p class="mb-0" th:text="#{statistics.widgets.total}">Total</p>
-                    <h5 class="mb-0" th:text="${widgets.usersTotal != null ? widgets.usersTotal : 0}" ></h5>
+                    <p class="mb-0">Total</p>
+                    <h5 class="mb-0"></h5>
                   </div>
                 </div>
               </div>
@@ -102,19 +102,19 @@
             <div class="col-lg-3 col-sm-6 mb-4">
               <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                  <h5 class="card-title mb-0" th:text="#{statistics.widgets.partners}">Partners</h5>
+                  <h5 class="card-title mb-0">Partners</h5>
                   <div class="badge rounded-pill bg-label-primary p-2">
                     <i class="ti ti-users ti-sm"></i>
                   </div>
                 </div>
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-center mb-3">
-                    <p class="mb-0" th:text="#{statistics.widgets.last7days}">Last 7 days</p>
-                    <h5 class="mb-0" th:text="${widgets.sellersLast7Days != null ? widgets.sellersLast7Days : 0}" ></h5>
+                    <p class="mb-0">Last 7 days</p>
+                    <h5 class="mb-0"></h5>
                   </div>
                   <div class="d-flex justify-content-between align-items-center">
-                    <p class="mb-0" th:text="#{statistics.widgets.total}">Total</p>
-                    <h5 class="mb-0" th:text="${widgets.sellersTotal != null ? widgets.sellersTotal : 0}" ></h5>
+                    <p class="mb-0">Total</p>
+                    <h5 class="mb-0"></h5>
                   </div>
                 </div>
               </div>
@@ -127,7 +127,7 @@
                 <div class="col-12 mb-4">
                   <div class="card">
                     <div class="card-header header-elements">
-                      <h5 class="card-title mb-0" th:text="#{statistics.charts.order}">Orders</h5>
+                      <h5 class="card-title mb-0">3 - автомати</h5>
                     </div>
                     <div class="card-body chartHeight">
                       <canvas id="orders-chart"></canvas>
@@ -140,7 +140,7 @@
                 <div class="col-12 mb-4">
                   <div class="card">
                     <div class="card-header header-elements">
-                      <h5 class="card-title mb-0" th:text="#{statistics.charts.income}">Income</h5>
+                      <h5 class="card-title mb-0">4 - снайперки</h5>
                     </div>
                     <div class="card-body chartHeight">
                       <canvas id="income-chart"></canvas>
@@ -153,7 +153,7 @@
                 <div class="col-12 mb-4">
                   <div class="card">
                     <div class="card-header header-elements">
-                      <h5 class="card-title mb-0" th:text="#{statistics.charts.licenses}">Licenses</h5>
+                      <h5 class="card-title mb-0">Licenses</h5>
                     </div>
                     <div class="card-body chartHeight">
                       <canvas id="licenses-chart"></canvas>
@@ -166,7 +166,7 @@
                 <div class="col-12 mb-4">
                   <div class="card">
                     <div class="card-header header-elements">
-                      <h5 class="card-title mb-0" th:text="#{statistics.charts.users}">Users</h5>
+                      <h5 class="card-title mb-0">Users</h5>
                     </div>
                     <div class="card-body chartHeight">
                       <canvas id="users-chart"></canvas>
@@ -179,7 +179,7 @@
                 <div class="col-12 mb-4">
                   <div class="card">
                     <div class="card-header header-elements">
-                      <h5 class="card-title mb-0" th:text="#{statistics.charts.newPartners}">New partners</h5>
+                      <h5 class="card-title mb-0">New partners</h5>
                     </div>
                     <div class="card-body chartHeight">
                       <canvas id="sellers-chart"></canvas>
@@ -192,7 +192,7 @@
                 <div class="col-12 mb-4">
                   <div class="card">
                     <div class="card-header header-elements">
-                      <h5 class="card-title mb-0" th:text="#{statistics.charts.usingShadeGuide}">Using shade guide</h5>
+                      <h5 class="card-title mb-0">Using shade guide</h5>
                     </div>
                     <div class="card-body chartHeight">
                       <canvas id="shade-guide-chart"></canvas>
@@ -205,7 +205,7 @@
                 <div class="col-12 mb-4">
                   <div class="card">
                     <div class="card-header header-elements">
-                      <h5 class="card-title mb-0" th:text="#{statistics.charts.usingDentalNotation}">Using dental notation</h5>
+                      <h5 class="card-title mb-0">Using dental notation</h5>
                     </div>
                     <div class="card-body chartHeight">
                       <canvas id="dental-notation-chart"></canvas>
@@ -218,7 +218,7 @@
                 <div class="col-12 mb-4">
                   <div class="card">
                     <div class="card-header header-elements">
-                      <h5 class="card-title mb-0" th:text="#{statistics.charts.zoneRating}">Zone rating</h5>
+                      <h5 class="card-title mb-0">Zone rating</h5>
                     </div>
                     <div class="card-body chartHeight">
                       <canvas id="rating-chart"></canvas>
@@ -231,7 +231,7 @@
                 <div class="col-12 mb-4">
                   <div class="card">
                     <div class="card-header header-elements">
-                      <h5 class="card-title mb-0" th:text="#{statistics.charts.frequencyOfToothAnalysis}">Frequency of tooth analysis (by FDI)</h5>
+                      <h5 class="card-title mb-0">Frequency of tooth analysis (by FDI)</h5>
                     </div>
                     <div class="card-body chartHeight">
                       <canvas id="frequency-chart"></canvas>
@@ -244,7 +244,7 @@
                 <div class="col-12 mb-4">
                   <div class="card">
                     <div class="card-header header-elements">
-                      <h5 class="card-title mb-0" th:text="#{statistics.charts.manualAdjustmentOfAnalyzes}">Manual adjustment of analyzes</h5>
+                      <h5 class="card-title mb-0">Manual adjustment of analyzes</h5>
                     </div>
                     <div class="card-body chartHeight">
                       <canvas id="analyzes-chart"></canvas>
@@ -257,7 +257,7 @@
                 <div class="col-12 mb-4">
                   <div class="card">
                     <div class="card-header header-elements">
-                      <h5 class="card-title mb-0" th:text="#{statistics.charts.typeOfAnalyzes}">Type of analyzes</h5>
+                      <h5 class="card-title mb-0">Type of analyzes</h5>
                     </div>
                     <div class="card-body chartHeight">
                       <canvas id="analyzesType-chart"></canvas>
@@ -270,25 +270,25 @@
               <div class="card">
                 <div class="card-body">
                   <div class="row">
-                    <div class="col-lg-12 col-md-6 col-12 mb-4">
-                      <label for="statisticsDaterange"
-                             class="form-label"
-                             th:text="#{statistics.filter.period}">Select the required period</label>
-                      <input type="text"
-                             class="form-control input-group"
-                             placeholder="Select date range"
-                             id="statisticsDaterange"
-                             readonly="readonly">
-                    </div>
-                    <div class="col-lg-12 col-md-6 col-12">
-                      <label for="statisticsCountry"
-                             class="form-label" th:text="#{statistics.filter.country}">Select country</label>
-                      <select onchange="updateDashboards()" id="statisticsCountry"
-                              class="form-select">
-                        <option th:value="${null}" selected>All</option>
-                        <option th:each="el : ${countries}" th:value="${el.id}" th:text="${el.name}"></option>
-                      </select>
-                    </div>
+<!--                    <div class="col-lg-12 col-md-6 col-12 mb-4">-->
+<!--                      <label for="statisticsDaterange"-->
+<!--                             class="form-label"-->
+<!--                             >Select the required period</label>-->
+<!--                      <input type="text"-->
+<!--                             class="form-control input-group"-->
+<!--                             placeholder="Select date range"-->
+<!--                             id="statisticsDaterange"-->
+<!--                             readonly="readonly">-->
+<!--                    </div>-->
+<!--                    <div class="col-lg-12 col-md-6 col-12">-->
+<!--                      <label for="statisticsCountry"-->
+<!--                             class="form-label">Select country</label>-->
+<!--                      <select onchange="updateDashboards()" id="statisticsCountry"-->
+<!--                              class="form-select">-->
+<!--                        <option th:value="${null}" selected>All</option>-->
+<!--                        <option th:each="el : ${countries}" th:value="${el.id}" th:text="${el.name}"></option>-->
+<!--                      </select>-->
+<!--                    </div>-->
                   </div>
                 </div>
               </div>
@@ -361,7 +361,7 @@
   ]
 
   function updateDashboards(){
-      let array = [];
+      let array;
       const $statisticsDaterange = $('#statisticsDaterange');
       if($($statisticsDaterange).val() !== ''){
         array = $($statisticsDaterange).val().split(' to ');
