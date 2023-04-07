@@ -75,38 +75,27 @@
 			<artifactId>httpclient</artifactId>
 			<version>4.5.13</version>
 		</dependency>
+
+		<!-- for http request -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpcore</artifactId>
 			<version>4.4.16</version>
 		</dependency>
 
-		<!--		<dependency>-->
-<!--			<groupId>com.lukaspradel</groupId>-->
-<!--			<artifactId>steam-web-api</artifactId>-->
-<!--			<version>1.4.2</version>-->
-<!--		</dependency>-->
+		<!-- jsoup for parsing -->
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.14.3</version>
+		</dependency>
 
-<!--		&lt;!&ndash; steam-web-api only dota i klasu hyina &ndash;&gt;-->
-<!--		<dependency>-->
-<!--			<groupId>com.lukaspradel</groupId>-->
-<!--			<artifactId>steam-web-api</artifactId>-->
-<!--			<version>1.4.2</version>-->
-<!--		</dependency>-->
-
-<!--		&lt;!&ndash; stemkit-web &ndash;&gt;-->
-<!--		<dependency>-->
-<!--			<groupId>com.bystr.stemkit</groupId>-->
-<!--			<artifactId>stemkit-web</artifactId>-->
-<!--			<version>0.0.2</version>-->
-<!--		</dependency>-->
-
-<!--		&lt;!&ndash; steam-api &ndash;&gt;-->
-<!--		<dependency>-->
-<!--			<groupId>com.github.go-ive</groupId>-->
-<!--			<artifactId>steam-api</artifactId>-->
-<!--			<version>2.1</version>-->
-<!--		</dependency>-->
+		<!-- selenium-java for action on page -->
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>4.3.0</version>
+		</dependency>
 
 	</dependencies>
 

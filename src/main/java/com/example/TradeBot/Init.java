@@ -15,6 +15,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
+import java.util.Objects;
 
 @Component
 @Slf4j
@@ -38,10 +39,8 @@ public class Init implements CommandLineRunner {
             HttpResponse response = httpClient.execute(httpGet);
             RequestListOfItems requestListOfItems = objectMapper.readValue(EntityUtils.toString(response.getEntity()), RequestListOfItems.class);
             for (ItemFromParser item : requestListOfItems.getItems()){
-                if(item != null){
-                    if(item.getOverprice() == null && !item.isHasTradeLock() && !item.isHasHighDemand()) {
-                        System.out.println(item);
-                    }
+                if(Objects.nonNull(item.getOverprice()) && !item.isHasTradeLock() && !item.isHasHighDemand()) {
+                    System.out.println(item);
                 }
             }
             Thread.sleep(300);
