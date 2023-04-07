@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class Item {
+    private long id;
     private String shortName;
     private String quality; // 2 букви якості
     private boolean isStatTrak;
