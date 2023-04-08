@@ -1,0 +1,5 @@
+
+https://inventories.cs.money/5.0/load_bots_inventory/730?limit=60&offset=0&order=asc&priceWithBonus=30&sort=price&type=4&withStack=true
+
+https://cs.money/3.0/load_user_inventory/730?isPrime=false&limit=60&noCache=true&offset=0&order=desc&sort=price&withStack=true
+https://old.cs.money/730/load_user_inventory
