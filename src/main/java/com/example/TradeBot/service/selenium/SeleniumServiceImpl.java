@@ -5,7 +5,6 @@ import com.example.TradeBot.dto.MyChromeProfile;
 import com.example.TradeBot.dto.MySteamProfile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -23,11 +22,15 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
-@AllArgsConstructor
 public class SeleniumServiceImpl implements SeleniumService{
     private final ObjectMapper objectMapper;
-    public void login() throws InterruptedException, IOException {
+    private WebDriver driver;
 
+    public SeleniumServiceImpl(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
+    public void startDriver() throws IOException {
         File fileChromeProfile = new File(Objects.requireNonNull(this.getClass().getClassLoader().getResource("my_chrome_profile.json")).getFile());
         MyChromeProfile myChromeProfile = objectMapper.readValue(fileChromeProfile, MyChromeProfile.class);
 
@@ -39,10 +42,13 @@ public class SeleniumServiceImpl implements SeleniumService{
         options.addArguments("user-data-dir=" + myChromeProfile.getPath());
         options.addArguments("profile-directory=" + myChromeProfile.getProfile());
 
-        WebDriver driver = new ChromeDriver(options);
+        driver = new ChromeDriver(options);
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-        driver.get("https://cs.money/uk/");
+    }
 
+    public void login() throws InterruptedException, IOException {
+
+        driver.get("https://cs.money/uk/");
 
         try {
             new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.elementToBeClickable(By.cssSelector("#layout-page-header > div.MediaQueries_desktop__TwhBE > div > div.Personal_personal__1v9GT > a > button"))).click();
@@ -60,14 +66,12 @@ public class SeleniumServiceImpl implements SeleniumService{
         } catch (Exception e){
             log.info("we now in profile");
         }
+    }
 
-
-
-//        log.info("click login button");
-//        WebElement button = driver.findElement(By.xpath("//*[@id=\"menu-item-24370\"]/a"));
-//        log.info("kjsgdlgjs");
-//        button.click();
-//        driver.close();
-//        driver.quit();
+    public float getBalance() {
+        driver.get("https://cs.money/uk/");
+        String balanseString = driver.findElement(By.cssSelector("#layout-page-header > div.MediaQueries_desktop__TwhBE > div > div.Personal_personal__1v9GT > div.Balances_balance_container__1RZzs > div.Balances_foreground_balance__1fVyv > div > div.USDCurrencyView_info__2Zc3D > span.csm_ui__text__6542e.csm_ui__body_14_medium__6542e.USDCurrencyView_balance__2Hihw")).getText();
+        balanseString = balanseString.replace("$ ", "");
+        return Float.parseFloat(balanseString);
     }
 }

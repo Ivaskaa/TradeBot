@@ -25,17 +25,8 @@ public class ItemServiceImpl implements ItemService{
         log.info("success save item");
     }
     @Override
-    public void saveList(List<ItemFromParser> itemsFormParser) {
+    public void saveList(List<Item> items) {
         log.info("save items from parser");
-        List<Item> items = itemsFormParser
-                .stream()
-                .map(itemFromParser -> {
-                    Item item = itemMapper.itemFromParserToItem(itemFromParser);
-                    item.setDate(LocalDateTime.now());
-                    return item;
-                })
-                .toList();
-
         itemRepository.saveAll(items);
         log.info("success save items");
     }

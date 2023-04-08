@@ -1,25 +1,13 @@
 package com.example.TradeBot;
 
-import com.example.TradeBot.dto.item.ItemFromParser;
-import com.example.TradeBot.dto.request.RequestListOfItems;
 import com.example.TradeBot.service.item.ItemService;
+import com.example.TradeBot.service.request.RequestService;
+import com.example.TradeBot.service.selenium.SeleniumService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.failsafe.Execution;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 @Component
 @Slf4j
@@ -28,11 +16,17 @@ public class Init implements CommandLineRunner {
 
     private final ObjectMapper objectMapper;
     private final ItemService itemService;
+    private final SeleniumService seleniumService;
+
+    private final RequestService requestService;
 
     @Override
     public void run(String... args) throws Exception {
         log.info("################## START OF INITIALIZATION ##################");
-
+//        requestService.getCurrencyFromApi(1.5f, 5.5f, 20.0f);
+        seleniumService.startDriver();
+        seleniumService.login();
+        System.out.println(seleniumService.getBalance());
         log.info("################## END OF INITIALIZATION ##################");
     }
 

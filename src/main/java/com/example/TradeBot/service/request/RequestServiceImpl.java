@@ -2,6 +2,8 @@ package com.example.TradeBot.service.request;
 
 import com.example.TradeBot.dto.item.ItemFromParser;
 import com.example.TradeBot.dto.request.RequestListOfItems;
+import com.example.TradeBot.mapper.ItemMapper;
+import com.example.TradeBot.model.item.Item;
 import com.example.TradeBot.service.item.ItemService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -15,6 +17,7 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -25,8 +28,10 @@ import java.util.Objects;
 public class RequestServiceImpl implements RequestService{
     private final ItemService itemService;
     private final ObjectMapper objectMapper;
+    private final ItemMapper itemMapper;
 
-    public void getCurrencyFromApi(float startPrice, float endPrice, float userPercentOverprice) throws Exception {
+    @Override
+    public List<Item> getCurrencyFromApi(float startPrice, float endPrice, float userPercentOverprice) throws Exception {
 
         List<ItemFromParser> itemsFromParser = new ArrayList<>();
 
@@ -75,6 +80,16 @@ public class RequestServiceImpl implements RequestService{
             }
         }
 
-        itemService.saveList(itemsFromParser);
+        List<Item> items = itemsFromParser
+                .stream()
+                .map(itemFromPar -> {
+                    Item item = itemMapper.itemFromParserToItem(itemFromPar);
+                    item.setDate(LocalDateTime.now());
+                    return item;
+                })
+                .toList();
+
+        itemService.saveList(items);
+        return items;
     }
 }

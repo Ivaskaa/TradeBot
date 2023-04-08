@@ -1,5 +1,9 @@
 package com.example.TradeBot.service.request;
 
+import com.example.TradeBot.model.item.Item;
+
+import java.util.List;
+
 public interface RequestService {
-    void getCurrencyFromApi(float startPrice, float endPrice, float userPercentOverprice) throws Exception;
+    List<Item> getCurrencyFromApi(float startPrice, float endPrice, float userPercentOverprice) throws Exception;
 }
