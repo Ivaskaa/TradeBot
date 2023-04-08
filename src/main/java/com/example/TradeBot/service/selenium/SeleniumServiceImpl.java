@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 @Slf4j
 @AllArgsConstructor
-public class SeleniumServiceImpl {
+public class SeleniumServiceImpl implements SeleniumService{
     private final ObjectMapper objectMapper;
     public void login() throws InterruptedException, IOException {
 
@@ -48,16 +48,17 @@ public class SeleniumServiceImpl {
             new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.elementToBeClickable(By.cssSelector("#layout-page-header > div.MediaQueries_desktop__TwhBE > div > div.Personal_personal__1v9GT > a > button"))).click();
             try {
                 driver.findElement(By.cssSelector("#imageLogin")).click();
+                log.info("success login in profile");
             } catch (Exception e){
-                log.info("need new steam login with authenticator");
                 File fileSteamProfile = new File(Objects.requireNonNull(this.getClass().getClassLoader().getResource("my_steam_profile.json")).getFile());
                 MySteamProfile mySteamProfile = objectMapper.readValue(fileSteamProfile, MySteamProfile.class);
                 driver.findElement(By.cssSelector("#responsive_page_template_content > div.page_content > div:nth-child(1) > div > div > div > div.newlogindialog_FormContainer_3jLIH > div > form > div:nth-child(1) > input")).sendKeys(mySteamProfile.getUsername());
                 driver.findElement(By.cssSelector("#responsive_page_template_content > div.page_content > div:nth-child(1) > div > div > div > div.newlogindialog_FormContainer_3jLIH > div > form > div:nth-child(2) > input")).sendKeys(mySteamProfile.getPassword());
                 driver.findElement(By.cssSelector("#responsive_page_template_content > div.page_content > div:nth-child(1) > div > div > div > div.newlogindialog_FormContainer_3jLIH > div > form > div.newlogindialog_SignInButtonContainer_14fsn > button")).click();
+                log.info("need new steam login with authenticator");
             }
         } catch (Exception e){
-            log.info("in profile");
+            log.info("we now in profile");
         }
 
 
