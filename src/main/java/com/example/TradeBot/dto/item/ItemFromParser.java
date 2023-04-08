@@ -42,10 +42,7 @@ public class ItemFromParser {
     @Override
     public String toString() {
         return "ItemFromParser{" +
-                "overprice=" + overprice +
                 ", price=" + price +
-                ", userOverprice=" + userOverprice +
-                ", priceWithBonus=" + priceWithBonus +
                 ", userPercentOverprice=" + userPercentOverprice +
                 ", fullName='" + fullName + '\'' +
                 '}';

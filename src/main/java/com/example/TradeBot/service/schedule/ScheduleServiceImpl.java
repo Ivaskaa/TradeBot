@@ -42,7 +42,8 @@ public class ScheduleServiceImpl implements ScheduleService {
                 offset = 800;
             }
             float startPrice = 1.5f;
-            float endPrice = 2.5f;
+            float endPrice = 5.5f;
+            float userPercentOverprice = 20.0f;
             boolean isBreak = false;
 
             for(; offset < 5000; offset += 60){
@@ -51,10 +52,10 @@ public class ScheduleServiceImpl implements ScheduleService {
                 uriBuilder.addParameter("limit", "60");
                 uriBuilder.addParameter("offset", String.valueOf(offset));
                 uriBuilder.addParameter("order", "asc");
-                uriBuilder.addParameter("priceWithBonus", "30");
+                //uriBuilder.addParameter("priceWithBonus", "30");
                 uriBuilder.addParameter("sort", "price");
                 uriBuilder.addParameter("type", String.valueOf(type));
-                uriBuilder.addParameter("withStack", "true");
+                //uriBuilder.addParameter("withStack", "true");
 
                 URI uri = uriBuilder.build();
                 System.out.println(uri);
@@ -65,7 +66,13 @@ public class ScheduleServiceImpl implements ScheduleService {
                     if(item.getPrice() > startPrice){
                         if(item.getPrice() > endPrice){
                             isBreak = true;
-                        } else if(Objects.isNull(item.getOverprice()) && !item.isHasTradeLock() && !item.isHasHighDemand()) {
+                        } else if (!Objects.isNull(item.getUserPercentOverprice()) && // переоцінка користувача не порожня
+                                item.getUserPercentOverprice() < userPercentOverprice && // допустима переоцінка користувача
+                                !item.isHasTradeLock() && // доступна транзакція
+                                // перевірка на можливіть поставити націнку > 20%
+                                !Objects.isNull(item.getOverpay()) // стікери або флоат
+                        )
+                        {
                             itemsFromParser.add(item);
                             System.out.println(item);
                         }
