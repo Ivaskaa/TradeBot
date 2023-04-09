@@ -33,13 +33,16 @@ public class ItemFromParser {
     private Float priceWithBonus;
     private Long userId;
     private Integer pattern; // номер паттерна
-    private Integer rank;
+    private String rank;
+    private Integer backSide;
+    private Integer playSide;
     private String collection;
-    private List<StickerFromParser> stickers;
     private OverpayFromParser overpay;
+    private List<StickerFromParser> stickers;
     private String inspect;
     private String fullName;
     private Float userPercentOverprice;
+    private boolean hasConcreteSkinPage;
     private String shortName;
 
     @Override

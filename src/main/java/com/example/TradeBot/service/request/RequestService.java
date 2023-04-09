@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface RequestService {
     List<Item> getCurrencyFromApi(float startPrice, float endPrice, float userPercentOverprice) throws Exception;
+    void getCurrencyFromApiDiscountPercent() throws Exception;
 }

@@ -5,6 +5,7 @@ import com.example.TradeBot.dto.request.RequestListOfItems;
 import com.example.TradeBot.mapper.ItemMapper;
 import com.example.TradeBot.model.item.Item;
 import com.example.TradeBot.service.item.ItemService;
+import com.example.TradeBot.service.selenium.SeleniumService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ public class RequestServiceImpl implements RequestService{
     private final ItemService itemService;
     private final ObjectMapper objectMapper;
     private final ItemMapper itemMapper;
+    private final SeleniumService seleniumService;
 
     @Override
     public List<Item> getCurrencyFromApi(float startPrice, float endPrice, float userPercentOverprice) throws Exception {
@@ -38,7 +40,7 @@ public class RequestServiceImpl implements RequestService{
         for(int type = 3; type <= 4; type++){
             int offset;
             if(type == 3){
-                offset = 1500;
+                offset = 2000;
             } else {
                 offset = 800;
             }
@@ -91,5 +93,53 @@ public class RequestServiceImpl implements RequestService{
 
         itemService.saveList(items);
         return items;
+    }
+
+    public void getCurrencyFromApiDiscountPercent() throws Exception {
+
+        seleniumService.startDriver();
+        seleniumService.login();
+//        float balance = seleniumService.getBalance();
+        seleniumService.changeSelectToDiscount();
+        List<Long> listOfBadItems = new ArrayList<>();
+
+        while(true){
+            HttpClient httpClient = HttpClientBuilder.create().build();
+            URIBuilder uriBuilder = new URIBuilder("https://inventories.cs.money/5.0/load_bots_inventory/730");
+            uriBuilder.addParameter("limit", "25");
+            uriBuilder.addParameter("offset", "0");
+            uriBuilder.addParameter("order", "asc");
+            uriBuilder.addParameter("sort", "discount_percent");
+            URI uri = uriBuilder.build();
+            log.info("url: {}", uri);
+            HttpGet httpGet = new HttpGet(uri);
+            HttpResponse response = httpClient.execute(httpGet);
+            RequestListOfItems requestListOfItems = objectMapper.readValue(EntityUtils.toString(response.getEntity()), RequestListOfItems.class);
+            long number = 1;
+            for (ItemFromParser itemFromParser : requestListOfItems.getItems()){
+                number++;
+                boolean isBreak = false;
+                for(Long badItemId : listOfBadItems){
+                    if(Objects.equals(itemFromParser.getId(), badItemId)){
+                        isBreak = true;
+                        break;
+                    }
+                }
+                if(isBreak) break;
+                if (Objects.nonNull(itemFromParser.getUserPercentOverprice()) && // переоцінка користувача не порожня
+                        itemFromParser.getUserPercentOverprice() < -8.5f  && // допустима знижка
+                        !itemFromParser.isHasTradeLock() && // доступна транзакція
+                        itemFromParser.getPrice() < 33.00 &&
+                        itemFromParser.getPrice() > 2.20
+                ) {
+                    System.out.println(itemFromParser);
+                    boolean success = seleniumService.buyItem(number, itemFromParser.getPrice());
+                    if(!success){
+                        listOfBadItems.add(itemFromParser.getId());
+                    }
+                }
+            }
+        }
+
     }
 }

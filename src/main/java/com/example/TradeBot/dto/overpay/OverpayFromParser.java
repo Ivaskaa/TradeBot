@@ -7,5 +7,4 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class OverpayFromParser {
     private Float stickers;
-    private Float float_;
 }
