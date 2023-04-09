@@ -29,7 +29,9 @@ public class Init implements CommandLineRunner {
         seleniumService.startDriver();
         seleniumService.login();
         //System.out.println(seleniumService.getBalance());
-        System.out.println(seleniumService.getInventoryInNewTab());
+        //System.out.println(seleniumService.getInventoryInNewTab());
+        //seleniumService.getCookies();
+        seleniumService.getInventoryByRequest();
         log.info("################## END OF INITIALIZATION ##################");
     }
 

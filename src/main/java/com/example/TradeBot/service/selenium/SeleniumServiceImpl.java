@@ -5,10 +5,20 @@ import com.example.TradeBot.dto.MyChromeProfile;
 import com.example.TradeBot.dto.MySteamProfile;
 import com.example.TradeBot.dto.inventory.InventoryFromParser;
 import com.example.TradeBot.dto.item.ItemFromParser;
+import com.example.TradeBot.dto.request.RequestListOfItems;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.CookieStore;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.http.util.EntityUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -18,9 +28,12 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -78,7 +91,7 @@ public class SeleniumServiceImpl implements SeleniumService{
         return Float.parseFloat(balanseString);
     }
 
-    public List<ItemFromParser> getInventoryInNewTab() {
+    public List<ItemFromParser> getInventoryInNewTab() throws JsonProcessingException {
         String uri = "https://cs.money/3.0/load_user_inventory/730?isPrime=false&limit=60&noCache=true&offset=0&order=desc&sort=price&withStack=true";
 
         // Execute JavaScript to open a new tab
@@ -100,19 +113,54 @@ public class SeleniumServiceImpl implements SeleniumService{
 
         // mapping jsonText to InventoryFromParser
         ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            InventoryFromParser inventory = objectMapper.readValue(jsonText, InventoryFromParser.class);
-            List<ItemFromParser> items = inventory.getItems();
+        InventoryFromParser inventory = objectMapper.readValue(jsonText, InventoryFromParser.class);
+        List<ItemFromParser> items = inventory.getItems();
 
-            // Close the current tab
-            driver.close();
+        // Close the current tab
+        driver.close();
 
-            // Switch to the first window handle
-            driver.switchTo().window(driver.getWindowHandles().iterator().next());
-            return items;
-        } catch (JsonProcessingException e) {
-            return null;
+        // Switch to the first window handle
+        driver.switchTo().window(driver.getWindowHandles().iterator().next());
+        return items;
+    }
+
+    public CookieStore getCookies() {
+        CookieStore cookieStore = new BasicCookieStore();
+        // Get all cookies
+        Set<Cookie> cookies = driver.manage().getCookies();
+
+        // Print each cookie
+        for (Cookie cookie : cookies) {
+            cookieStore.addCookie(new BasicClientCookie(cookie.getName(), cookie.getValue()));
+            System.out.println(cookie.getName() + ": " + cookie.getValue());
         }
+        return cookieStore;
+    }
 
+    public List<ItemFromParser> getInventoryByRequest() throws URISyntaxException, IOException {
+        CookieStore cookieStore = getCookies();
+        HttpClient httpClient = HttpClientBuilder.create().setDefaultCookieStore(cookieStore).build();;
+
+        URIBuilder uriBuilder = new URIBuilder("https://cs.money/3.0/load_user_inventory/730?isPrime=false&limit=60&noCache=true&offset=0&order=desc&sort=price&withStack=true");
+//        uriBuilder.addParameter("limit", "60");
+//        uriBuilder.addParameter("offset", String.valueOf(offset));
+//        uriBuilder.addParameter("order", "asc");
+//        uriBuilder.addParameter("priceWithBonus", "30");
+//        uriBuilder.addParameter("sort", "price");
+//        uriBuilder.addParameter("type", String.valueOf(type));
+//        uriBuilder.addParameter("withStack", "true");
+        URI uri = uriBuilder.build();
+
+        System.out.println(uri);
+        HttpGet httpGet = new HttpGet(uri);
+        HttpResponse response = httpClient.execute(httpGet);
+        System.out.println("response\n" + response);
+        System.out.println("entity\n" + response.getEntity());
+        InventoryFromParser inventory = objectMapper.readValue(EntityUtils.toString(response.getEntity()), InventoryFromParser.class);
+        System.out.println(inventory);
+
+        List<ItemFromParser> items = inventory.getItems();
+        System.out.println(items);
+        return items;
     }
 }
