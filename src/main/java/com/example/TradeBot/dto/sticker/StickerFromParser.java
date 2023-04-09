@@ -1,8 +1,10 @@
 package com.example.TradeBot.dto.sticker;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class StickerFromParser {
     private Float overprice;
     private String name;

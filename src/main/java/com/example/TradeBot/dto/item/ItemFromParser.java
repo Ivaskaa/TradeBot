@@ -2,11 +2,14 @@ package com.example.TradeBot.dto.item;
 
 import com.example.TradeBot.dto.overpay.OverpayFromParser;
 import com.example.TradeBot.dto.sticker.StickerFromParser;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown=true)
+
 public class ItemFromParser {
     private Long appId;
     private Long assetId;
