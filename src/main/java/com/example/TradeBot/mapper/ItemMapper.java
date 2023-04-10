@@ -12,6 +12,7 @@ public class ItemMapper {
     public Item itemFromParserToItem(ItemFromParser itemFromParser){
         Item item = new Item();
         item.setCsMoneyId(itemFromParser.getId());
+        item.setNameId(itemFromParser.getNameId());
         item.setShortName(itemFromParser.getShortName());
         item.setQuality(itemFromParser.getQuality());
         item.setStatTrak(itemFromParser.isStatTrak());

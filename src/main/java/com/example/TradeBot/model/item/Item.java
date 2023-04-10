@@ -15,6 +15,7 @@ public class Item {
     @Column(updatable = false, nullable = false)
     private Long id;
     private Long csMoneyId;
+    private Long nameId; // для ортимання цін за датами
     private String shortName;
     private String quality; // 2 букви якості
     private boolean isStatTrak;
