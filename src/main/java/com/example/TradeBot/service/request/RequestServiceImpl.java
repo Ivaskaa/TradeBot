@@ -1,6 +1,7 @@
 package com.example.TradeBot.service.request;
 
 import com.example.TradeBot.dto.item.ItemFromParser;
+import com.example.TradeBot.dto.priceFromTime.PriceFromTime;
 import com.example.TradeBot.dto.request.RequestListOfItems;
 import com.example.TradeBot.mapper.ItemMapper;
 import com.example.TradeBot.model.item.Item;
@@ -15,12 +16,17 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 @Service
@@ -141,5 +147,39 @@ public class RequestServiceImpl implements RequestService{
             }
         }
 
+    }
+
+
+    @Override
+    public Pair<Double, Double> getMaxAndAveragePriceFromApi(long nameId) throws URISyntaxException, IOException {
+        HttpClient httpClient = HttpClientBuilder.create().build();
+        URIBuilder uriBuilder = new URIBuilder("https://cs.money/price_changes");
+        uriBuilder.addParameter("appId", "730");
+        uriBuilder.addParameter("nameId", "" + nameId);
+        Timestamp startTime = new Timestamp(System.currentTimeMillis() - (30L * 24 * 60 * 60 * 1000));
+        uriBuilder.addParameter("startTime", "" + startTime.getTime() );
+        uriBuilder.addParameter("endTime", "" + System.currentTimeMillis());
+
+
+        URI uri = uriBuilder.build();
+        System.out.println(uri);
+        HttpGet httpGet = new HttpGet(uri);
+        HttpResponse response = httpClient.execute(httpGet);
+        PriceFromTime[] requestListOfPrices = objectMapper.readValue(EntityUtils.toString(response.getEntity()), PriceFromTime[].class);
+
+        System.out.println("result");
+        double avg = 0, maxPrice = 0;
+        for (var priceTime: requestListOfPrices) {
+            avg += priceTime.getPrice();
+            avg = Math.round(avg * 10) / 10.0;
+            if (priceTime.getPrice() > maxPrice) {
+                maxPrice = priceTime.getPrice();
+            }
+        }
+        avg /= requestListOfPrices.length;
+
+        // переписати людською
+        avg = Double.parseDouble(String.format(Locale.US,"%.2f", avg)) ;
+        return Pair.of(maxPrice, avg);
     }
 }
