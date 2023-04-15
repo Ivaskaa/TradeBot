@@ -18,7 +18,9 @@ public class PurchaseRequest {
     private Long id;
     @CreationTimestamp
     private LocalDateTime purchaseAt;
+    private LocalDateTime canSellAt;
     private String fullName;
+    private String exterior;
     private float purchasePrice;
     private float sellPrice;
 }
