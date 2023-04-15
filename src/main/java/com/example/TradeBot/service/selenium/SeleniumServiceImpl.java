@@ -123,7 +123,7 @@ public class SeleniumServiceImpl implements SeleniumService{
         driver.get("https://cs.money/uk/");
 
         try {
-            new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.elementToBeClickable(By.cssSelector("#layout-page-header > div.MediaQueries_desktop__TwhBE > div > div.Personal_personal__1v9GT > a > button"))).click();
+            new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"global_action_menu\"]/a"))).click();
             try {
                 driver.findElement(By.cssSelector("#imageLogin")).click();
                 log.info("success login in profile");
