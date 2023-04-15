@@ -63,6 +63,70 @@ public class SeleniumServiceImpl implements SeleniumService{
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
     }
 
+
+    @Override
+    public void getElementsToBuy() throws InterruptedException {
+
+        float startPrice = 100f;
+        float endPrice = 2000f;
+        float profitPercent = 4.5f;
+
+        for(int i = 1; i < 10; i++){
+            driver.get("https://steamcommunity.com/market/search?q=&category_730_ItemSet%5B%5D=any&category_730_ProPlayer%5B%5D=any&category_730_StickerCapsule%5B%5D=any&category_730_TournamentTeam%5B%5D=any&category_730_Weapon%5B%5D=tag_weapon_ak47&appid=730#p" + i + "_price_asc");
+            Thread.sleep(500);
+            for (int j = 0; j < 10; j++){
+                String string;
+                try {
+                    string = new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.elementToBeClickable(By.cssSelector("#result_" + j + " > div.market_listing_price_listings_block > div.market_listing_right_cell.market_listing_their_price > span.market_table_value.normal_price > span.normal_price"))).getText();
+                } catch (Exception e){
+                    continue;
+                }
+                System.out.println(string);
+                string = string.replace("₴", "");
+                string = string.replace(",", ".");
+                float price = Float.parseFloat(string);
+                if(price > startPrice && price < endPrice){
+                    driver.findElement(By.xpath("//*[@id=\"result_" + j + "\"]")).click();
+                    string = driver.findElement(By.xpath("//*[@id=\"searchResultsRows\"]/div[" + 2 + "]/div[2]/div[2]/span/span[1]")).getText();
+                    string = string.replace("₴", "");
+                    string = string.replace(",", ".");
+                    float lastPrice = Float.parseFloat(string);
+                    System.out.println("last sell price:" + lastPrice);
+                    float buyPrice = lastPrice * 100 / (113 + profitPercent);
+                    System.out.println("buy price:" + buyPrice);
+                    string = driver.findElement(By.cssSelector("#market_commodity_buyrequests > span:nth-child(2)")).getText();
+                    string = string.replace("₴", "");
+                    string = string.replace(",", ".");
+                    float requestsToBuyAt = Float.parseFloat(string);
+                    System.out.println("requests to buy at:" + requestsToBuyAt);
+                    if(buyPrice > requestsToBuyAt){
+
+                        System.out.println("-------------------------------- i want to buy it for" + requestsToBuyAt);
+                    }
+                    driver.get("https://steamcommunity.com/market/search?q=&category_730_ItemSet%5B%5D=any&category_730_ProPlayer%5B%5D=any&category_730_StickerCapsule%5B%5D=any&category_730_TournamentTeam%5B%5D=any&category_730_Weapon%5B%5D=tag_weapon_ak47&appid=730#p" + i + "_price_asc");
+                }
+            }
+
+        }
+
+    }
+
+    public void loginSteam() throws InterruptedException, IOException {
+
+        driver.get("https://steamcommunity.com/");
+
+        try {
+//            new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.elementToBeClickable(By.cssSelector("#layout-page-header > div.MediaQueries_desktop__TwhBE > div > div.Personal_personal__1v9GT > a > button"))).click();
+            try {
+
+            } catch (Exception e){
+
+            }
+        } catch (Exception e){
+            log.info("now in profile");
+        }
+    }
+
     public void login() throws InterruptedException, IOException {
 
         driver.get("https://cs.money/uk/");
