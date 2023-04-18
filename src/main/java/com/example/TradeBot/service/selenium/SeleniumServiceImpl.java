@@ -125,13 +125,16 @@ public class SeleniumServiceImpl implements SeleniumService{
                             String exterior = driver.findElement(By.xpath("//*[@id=\"largeiteminfo_item_descriptors\"]/div[1]")).getText();
                             exterior = exterior.replace("Exterior: ", "");
                             System.out.println("-------------------------------- exterior" + exterior);
+
+                            // buy logic
                             if(!purchaseRequestService.isExistByfFullNameAndExterior(fullName, exterior)){
                                 buyPrice = (buyPrice + requestsToBuyAt) / 2;
-                                // buy logic
+
                                 driver.findElement(By.xpath("//*[@id=\"market_buyorder_info\"]/div[1]/div[1]/a/span")).click();
                                 driver.findElement(By.xpath("//*[@id=\"market_buy_commodity_input_price\"]")).clear();
                                 System.out.println("------------------------send " + buyPrice);
-//                                driver.findElement(By.xpath("//*[@id=\"market_buy_commodity_input_price\"]")).sendKeys(String.format("%,2f", buyPrice));
+                                // write price in input
+                                //driver.findElement(By.xpath("//*[@id=\"market_buy_commodity_input_price\"]")).sendKeys(String.format("%,2f", buyPrice));
                                 driver.findElement(By.xpath("//*[@id=\"market_buy_commodity_input_price\"]")).sendKeys(String.format("%,2f", 10.4f));
                                 try{
                                     // click on checkbox I agree to the terms of the Steam Subscriber Agreement
