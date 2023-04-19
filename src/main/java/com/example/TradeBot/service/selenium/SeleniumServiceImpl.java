@@ -149,9 +149,7 @@ public class SeleniumServiceImpl implements SeleniumService{
                                         while (true){
                                             String responseAboutOrder = driver.findElement(By.xpath("//*[@id=\"market_buy_commodity_status\"]")).getText();
                                             if(!responseAboutOrder.equals("Placing buy order...") && !responseAboutOrder.equals("Finding matching item listings at your desired price...")){
-                                                if(responseAboutOrder.equals("Success! Your buy order has been placed.\n" +
-                                                        "\n" +
-                                                        "You will be automatically notified by email when the purchase is completed. You can cancel this buy order from the bottom of this page, or from the market home page.")){
+                                                if(responseAboutOrder.contains("Success! Your buy order has been placed.")){
                                                     // after success buy
                                                     PurchaseRequest purchaseRequest = new PurchaseRequest();
                                                     purchaseRequest.setPurchasePrice(buyPrice);
@@ -246,7 +244,7 @@ public class SeleniumServiceImpl implements SeleniumService{
     }
 
     @Override
-    public void sendSellRequests() {
+    public void sendSellRequests() throws InterruptedException {
         driver.get("https://steamcommunity.com/id/398246592304682534098234/inventory/#730");
         try {
             driver.findElement(By.xpath("//*[@id=\"inventory_load_error_ctn\"]/div/div/div/div[2]/span")).click();
@@ -288,13 +286,41 @@ public class SeleniumServiceImpl implements SeleniumService{
                             if(startingAtPrice > inventoryItem.getSellPrice()){
                                 // sell logic
                                 // click on button sell
+                                Thread.sleep(2000);
                                 driver.findElement(By.xpath("//*[@id=\"iteminfo" + j + "_item_market_actions\"]/a/span[2]")).click();
                                 // send sell price
+                                Thread.sleep(2000);
                                 driver.findElement(By.xpath("//*[@id=\"market_sell_buyercurrency_input\"]")).sendKeys(String.format("%,2f", startingAtPrice));
                                 // click on checkbox I agree to the terms of the Steam Subscriber Agreement
+                                Thread.sleep(2000);
                                 driver.findElement(By.xpath("//*[@id=\"market_sell_dialog_accept_ssa\"]")).click();
                                 // click on button OK, put it up for sale
+                                Thread.sleep(2000);
                                 driver.findElement(By.xpath("//*[@id=\"market_sell_dialog_accept\"]/span")).click();
+                                // click on button OK
+                                Thread.sleep(2000);
+                                driver.findElement(By.xpath("//*[@id=\"market_sell_dialog_ok\"]/span")).click();
+                                // get response message
+                                for (int k = 0; k <= 3;){
+                                    String responseMessage = driver.findElement(By.xpath("//*[@id=\"market_sell_dialog_error\"]")).getText();
+                                    System.out.println(responseMessage);
+                                    if(!responseMessage.equals("")){
+                                        if(responseMessage.contains("Your listing has not been created. Refresh the page and try again.")){
+                                            // click on button OK
+                                            driver.findElement(By.xpath("//*[@id=\"market_sell_dialog_ok\"]/span")).click();
+                                            Thread.sleep(2000);
+                                            k++;
+                                            if(k == 3){
+                                                // click on crosshair
+                                                driver.findElement(By.xpath("//*[@id=\"market_sell_dialog\"]/div[2]/div/div")).click();
+                                            }
+                                        } else {
+
+                                            System.out.println("success");
+                                        }
+                                    }
+                                }
+
                             } else {
                                 // if the price is less than the profitable one, then send an email, if it is profitable (get at least half of the profitPercent), then sell
                             }

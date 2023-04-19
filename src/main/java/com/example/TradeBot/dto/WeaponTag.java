@@ -15,7 +15,6 @@ public class WeaponTag {
             "p250","p90","bizon","revolver","sawedoff","scar20","sg556","ssg08","tec9",
             "ump45","usp_silencer","xm1014"
     );
-
     public static final List<String> tags4_5percent = List.of("aug","awp","deagle",
             "famas","galilar","m4a1_silencer","m4a1","sg556","ssg08","ak47"
     );

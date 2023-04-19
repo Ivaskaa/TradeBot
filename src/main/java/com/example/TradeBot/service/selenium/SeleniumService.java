@@ -8,6 +8,6 @@ public interface SeleniumService {
     float getBalance();
     void sendPurchaseRequests(float startPrice, float endPrice, float profitPercent) throws InterruptedException;
     void updateInventory();
-    void sendSellRequests();
+    void sendSellRequests() throws InterruptedException;
     void endDriver();
 }

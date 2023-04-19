@@ -26,7 +26,7 @@ public class Init implements CommandLineRunner {
 //            seleniumService.sendPurchaseRequests(100f, 200f, 5f);
             seleniumService.sendSellRequests();
         }
-        seleniumService.endDriver();
+//        seleniumService.endDriver();
         log.info("################## END OF INITIALIZATION ##################");
     }
 
