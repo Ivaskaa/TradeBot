@@ -185,7 +185,7 @@ public class SeleniumServiceImpl implements SeleniumService{
     public void updateInventory() throws IOException {
         File fileSteamProfile = new File(Objects.requireNonNull(this.getClass().getClassLoader().getResource("my_steam_profile.json")).getFile());
         MySteamProfile mySteamProfile = objectMapper.readValue(fileSteamProfile, MySteamProfile.class);
-        driver.get("https://steamcommunity.com/profiles/"+mySteamProfile.getProfileId()+"/inventory/#730");
+        driver.get("https://steamcommunity.com/id/"+mySteamProfile.getProfileId()+"/inventory/#730");
         try {
             driver.findElement(By.xpath("//*[@id=\"inventory_load_error_ctn\"]/div/div/div/div[2]/span")).click();
             log.info("This inventory is not available at this time. Please try again later.");
