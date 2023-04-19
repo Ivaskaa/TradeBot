@@ -3,6 +3,7 @@ package com.example.TradeBot.service.selenium;
 
 import com.example.TradeBot.dto.MyChromeProfile;
 import com.example.TradeBot.dto.MySteamProfile;
+import com.example.TradeBot.dto.WeaponTag;
 import com.example.TradeBot.model.InventoryItem;
 import com.example.TradeBot.model.PurchaseRequest;
 import com.example.TradeBot.service.inventory_item.InventoryItemService;
@@ -82,87 +83,97 @@ public class SeleniumServiceImpl implements SeleniumService{
     }
 
     @Override
-    public void getElementsToBuy() throws InterruptedException {
+    public void sendPurchaseRequests(float startPrice, float endPrice, float profitPercent) throws InterruptedException {
 
-        float startPrice = 100f;
-        float endPrice = 200f;
-        float profitPercent = 4.5f;
-
-        for(int i = 1; i < 10; i++){
-            driver.get("https://steamcommunity.com/market/search?q=&category_730_ItemSet%5B%5D=any&category_730_ProPlayer%5B%5D=any&category_730_StickerCapsule%5B%5D=any&category_730_TournamentTeam%5B%5D=any&category_730_Weapon%5B%5D=tag_weapon_ak47&appid=730#p" + i + "_price_asc");
-            Thread.sleep(500);
-            for (int j = 0; j < 10; j++){
-                String string;
-                try {
-                    string = new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.elementToBeClickable(By.cssSelector("#result_" + j + " > div.market_listing_price_listings_block > div.market_listing_right_cell.market_listing_their_price > span.market_table_value.normal_price > span.normal_price"))).getText();
-                } catch (Exception e){
-                    continue;
-                }
-                System.out.println(string);
-                string = string.replace("₴", "");
-                string = string.replace(",", ".");
-                float price = Float.parseFloat(string);
-                if(price > startPrice && price < endPrice){
+        for (String weaponTag: WeaponTag.tags4_5percent) {
+            for (int i = 1; true; i++) {
+                boolean isBreak = false;
+                driver.get("https://steamcommunity.com/market/search?q=&category_730_ItemSet%5B%5D=any&category_730_ProPlayer%5B%5D=any&category_730_StickerCapsule%5B%5D=any&category_730_TournamentTeam%5B%5D=any&category_730_Weapon%5B%5D=tag_weapon_" + weaponTag + "&appid=730#p" + i + "_price_asc");
+                Thread.sleep(500);
+                for (int j = 0; j < 10; j++) {
+                    String itemPrice;
                     try {
-                        driver.findElement(By.xpath("//*[@id=\"result_" + j + "\"]")).click();
-                        // get users last sale price
-                        string = driver.findElement(By.xpath("//*[@id=\"searchResultsRows\"]/div[" + 2 + "]/div[2]/div[2]/span/span[1]")).getText();
-                        string = string.replace("₴", "");
-                        string = string.replace(",", ".");
-                        float usersLastSalePrice = Float.parseFloat(string);
-                        System.out.println("users last sale price:" + usersLastSalePrice);
-                        float buyPrice = usersLastSalePrice * 100 / (113 + profitPercent);
-                        System.out.println("buy price:" + buyPrice);
-                        // get users request to buy price
-                        string = driver.findElement(By.cssSelector("#market_commodity_buyrequests > span:nth-child(2)")).getText();
-                        string = string.replace("₴", "");
-                        string = string.replace(",", ".");
-                        float requestsToBuyAt = Float.parseFloat(string);
-                        System.out.println("requests to buy at:" + requestsToBuyAt);
-                        if(buyPrice > requestsToBuyAt){
-                            String fullName = driver.findElement(By.xpath("//*[@id=\"largeiteminfo_item_name\"]")).getText();
-                            System.out.println("-------------------------------- fullName" + fullName);
-                            String exterior = driver.findElement(By.xpath("//*[@id=\"largeiteminfo_item_descriptors\"]/div[1]")).getText();
-                            exterior = exterior.replace("Exterior: ", "");
-                            System.out.println("-------------------------------- exterior" + exterior);
-
-                            // buy logic
-                            if(!purchaseRequestService.isExistByfFullNameAndExterior(fullName, exterior)){
-                                buyPrice = (buyPrice + requestsToBuyAt) / 2;
-
-                                driver.findElement(By.xpath("//*[@id=\"market_buyorder_info\"]/div[1]/div[1]/a/span")).click();
-                                driver.findElement(By.xpath("//*[@id=\"market_buy_commodity_input_price\"]")).clear();
-                                System.out.println("------------------------send " + buyPrice);
-                                // write price in input
-                                //driver.findElement(By.xpath("//*[@id=\"market_buy_commodity_input_price\"]")).sendKeys(String.format("%,2f", buyPrice));
-                                driver.findElement(By.xpath("//*[@id=\"market_buy_commodity_input_price\"]")).sendKeys(String.format("%,2f", 10.4f));
-                                try{
-                                    // click on checkbox I agree to the terms of the Steam Subscriber Agreement
-                                    driver.findElement(By.xpath("//*[@id=\"market_buyorder_dialog_accept_ssa\"]")).click();
-                                    // click on place order
-                                    driver.findElement(By.xpath("//*[@id=\"market_buyorder_dialog_purchase\"]/span")).click();
-                                    // after success place order click on crosshair
-                                    driver.findElement(By.xpath("/html/body/div[3]/div[2]/div/div[1]")).click();
-
-                                    // after success buy
-                                    PurchaseRequest purchaseRequest = new PurchaseRequest();
-                                    purchaseRequest.setPurchasePrice(buyPrice);
-                                    purchaseRequest.setSellPrice(usersLastSalePrice);
-                                    purchaseRequest.setFullName(fullName);
-                                    purchaseRequest.setExterior(exterior);
-                                    purchaseRequestService.savePurchaseRequest(purchaseRequest);
-                                } catch (Exception ignored) {
-
-                                }
-                            }
-                        }
-                        driver.get("https://steamcommunity.com/market/search?q=&category_730_ItemSet%5B%5D=any&category_730_ProPlayer%5B%5D=any&category_730_StickerCapsule%5B%5D=any&category_730_TournamentTeam%5B%5D=any&category_730_Weapon%5B%5D=tag_weapon_ak47&appid=730#p" + i + "_price_asc");
-                    } catch (Exception e){
+                        itemPrice = new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.elementToBeClickable(By.cssSelector("#result_" + j + " > div.market_listing_price_listings_block > div.market_listing_right_cell.market_listing_their_price > span.market_table_value.normal_price > span.normal_price"))).getText();
+                    } catch (Exception e) {
                         continue;
                     }
+                    itemPrice = itemPrice.replace("₴", "");
+                    itemPrice = itemPrice.replace(",", ".");
+                    float price = Float.parseFloat(itemPrice);
+                    if (price > endPrice) {
+                       isBreak = true;
+                       break;
+                    }
+                    if (price > startPrice && price < endPrice) {
+                        try {
+                            driver.findElement(By.xpath("//*[@id=\"result_" + j + "\"]")).click();
+                            // get users last sale price
+                            String usersLastSalePriceString = driver.findElement(By.xpath("//*[@id=\"searchResultsRows\"]/div[" + 2 + "]/div[2]/div[2]/span/span[1]")).getText();
+                            if(!usersLastSalePriceString.contains("₴")) break;
+                            usersLastSalePriceString = usersLastSalePriceString.replace("₴", "");
+                            usersLastSalePriceString = usersLastSalePriceString.replace(",", ".");
+                            float usersLastSalePrice = Float.parseFloat(usersLastSalePriceString);
+                            System.out.println("users last sale price:" + usersLastSalePrice);
+                            float buyPrice = usersLastSalePrice * 100 / (113 + profitPercent);
+                            System.out.println("-13 + profit percent price: " + buyPrice);
+                            // get users request to buy price
+                            String usersRequestToBuyPriceString = driver.findElement(By.cssSelector("#market_commodity_buyrequests > span:nth-child(2)")).getText();
+                            usersRequestToBuyPriceString = usersRequestToBuyPriceString.replace("₴", "");
+                            usersRequestToBuyPriceString = usersRequestToBuyPriceString.replace(",", ".");
+                            float requestsToBuyAt = Float.parseFloat(usersRequestToBuyPriceString);
+                            System.out.println("requests to buy at:" + requestsToBuyAt);
+                            // get count buy requests of skin
+                            String buyRequestsCountString = driver.findElement(By.xpath("//*[@id=\"market_commodity_buyrequests\"]/span[1]")).getText();
+                            int buyRequestsCount = Integer.parseInt(buyRequestsCountString);
+                            System.out.println("buy requests count: " + buyRequestsCount);
+                            if (buyPrice > requestsToBuyAt && buyRequestsCount > 5000) {
+                                String fullName = driver.findElement(By.xpath("//*[@id=\"largeiteminfo_item_name\"]")).getText();
+                                String exterior = driver.findElement(By.xpath("//*[@id=\"largeiteminfo_item_descriptors\"]/div[1]")).getText();
+                                exterior = exterior.replace("Exterior: ", "");
+                                if(fullName.contains("Souvenir ")) continue;
+                                // buy logic
+                                if (!purchaseRequestService.isExistByfFullNameAndExterior(fullName, exterior)) {
+                                    buyPrice = (buyPrice + requestsToBuyAt) / 2;
+                                    // click place buy order button
+                                    driver.findElement(By.xpath("//*[@id=\"market_buyorder_info\"]/div[1]/div[1]/a/span")).click();
+                                    // clear price in input
+                                    driver.findElement(By.xpath("//*[@id=\"market_buy_commodity_input_price\"]")).clear();
+                                    System.out.println("------------------------ buy price " + buyPrice);
+                                    // write price in input
+                                    driver.findElement(By.xpath("//*[@id=\"market_buy_commodity_input_price\"]")).sendKeys(String.format("%,2f", buyPrice));
+                                    try {
+                                        // click on checkbox I agree to the terms of the Steam Subscriber Agreement
+                                        driver.findElement(By.xpath("//*[@id=\"market_buyorder_dialog_accept_ssa\"]")).click();
+                                        // click on place order
+                                        driver.findElement(By.xpath("//*[@id=\"market_buyorder_dialog_purchase\"]/span")).click();
+                                        while (true){
+                                            String responseAboutOrder = driver.findElement(By.xpath("//*[@id=\"market_buy_commodity_status\"]")).getText();
+                                            if(!responseAboutOrder.equals("Placing buy order...") && !responseAboutOrder.equals("Finding matching item listings at your desired price...")){
+                                                if(responseAboutOrder.equals("Success! Your buy order has been placed.\n" +
+                                                        "\n" +
+                                                        "You will be automatically notified by email when the purchase is completed. You can cancel this buy order from the bottom of this page, or from the market home page.")){
+                                                    // after success buy
+                                                    PurchaseRequest purchaseRequest = new PurchaseRequest();
+                                                    purchaseRequest.setPurchasePrice(buyPrice);
+                                                    purchaseRequest.setSellPrice(usersLastSalePrice);
+                                                    purchaseRequest.setFullName(fullName);
+                                                    purchaseRequest.setExterior(exterior);
+                                                    purchaseRequestService.savePurchaseRequest(purchaseRequest);
+                                                }
+                                                break;
+                                            }
+                                        }
+                                        // after success place order click on crosshair
+                                        driver.findElement(By.xpath("/html/body/div[3]/div[2]/div/div[1]")).click();
+                                    } catch (Exception ignored) {}
+                                }
+                            }
+                            driver.get("https://steamcommunity.com/market/search?q=&category_730_ItemSet%5B%5D=any&category_730_ProPlayer%5B%5D=any&category_730_StickerCapsule%5B%5D=any&category_730_TournamentTeam%5B%5D=any&category_730_Weapon%5B%5D=tag_weapon_" + weaponTag + "&appid=730#p" + i + "_price_asc");
+                        } catch (Exception ignored){}
+                    }
                 }
+            if(isBreak) break;
             }
-
         }
     }
 
@@ -184,6 +195,7 @@ public class SeleniumServiceImpl implements SeleniumService{
                 for(int i = 1; i <= 25; i++){
                     try {
                         driver.findElement(By.xpath("//*[@id=\"inventory_76561198888388607_730_2\"]/div/div[" + i + "]")).click();
+                        Thread.sleep(2000);
                     } catch (Exception ex){
                         break;
                     }
@@ -234,6 +246,71 @@ public class SeleniumServiceImpl implements SeleniumService{
     }
 
     @Override
+    public void sendSellRequests() {
+        driver.get("https://steamcommunity.com/id/398246592304682534098234/inventory/#730");
+        try {
+            driver.findElement(By.xpath("//*[@id=\"inventory_load_error_ctn\"]/div/div/div/div[2]/span")).click();
+            log.info("This inventory is not available at this time. Please try again later.");
+        } catch (Exception e){
+            for(int i = 1; i <= 25; i++){
+                try {
+                    driver.findElement(By.xpath("//*[@id=\"inventory_76561198888388607_730_2\"]/div/div[" + i + "]")).click();
+                    Thread.sleep(2000);
+                } catch (Exception ex){
+                    break;
+                }
+                for(int j = 0; j <= 1; j++){
+                    String exterior = driver.findElement(By.xpath("//*[@id=\"iteminfo" + j + "_item_descriptors\"]/div[1]")).getText();
+                    if(exterior.contains("Exterior:")){
+                        exterior = exterior.replace("Exterior: ", "");
+                    } else {
+                        continue;
+                    }
+                    String fullName = driver.findElement(By.cssSelector("#iteminfo" + j + "_item_name")).getText();
+                    if(Objects.isNull(fullName) || fullName.equals("")){
+                        continue;
+                    }
+                    String tradableAfterString;
+                    try {
+                        tradableAfterString = driver.findElement(By.xpath("//*[@id=\"iteminfo" + j + "_item_owner_descriptors\"]/div[2]")).getText();
+                    } catch (Exception exe){
+                        tradableAfterString = null;
+                    }
+                    if(tradableAfterString == null){
+                        InventoryItem inventoryItem = inventoryItemService.findInventoryItemByFullNameAndExterior(fullName, exterior);
+                        if(Objects.nonNull(inventoryItem)){
+                            // get starting at price
+                            String textWithStartingAtPrice = driver.findElement(By.xpath("//*[@id=\"iteminfo" + j + "_item_market_actions\"]/div/div[2]")).getText();
+                            int startIndex = textWithStartingAtPrice.indexOf(": ") + 2;
+                            int endIndex = textWithStartingAtPrice.indexOf("₴");
+                            String startingAtPriceString = textWithStartingAtPrice.substring(startIndex, endIndex).replace(",", ".");
+                            float startingAtPrice = Float.parseFloat(startingAtPriceString);
+                            if(startingAtPrice > inventoryItem.getSellPrice()){
+                                // sell logic
+                                // click on button sell
+                                driver.findElement(By.xpath("//*[@id=\"iteminfo" + j + "_item_market_actions\"]/a/span[2]")).click();
+                                // send sell price
+                                driver.findElement(By.xpath("//*[@id=\"market_sell_buyercurrency_input\"]")).sendKeys(String.format("%,2f", startingAtPrice));
+                                // click on checkbox I agree to the terms of the Steam Subscriber Agreement
+                                driver.findElement(By.xpath("//*[@id=\"market_sell_dialog_accept_ssa\"]")).click();
+                                // click on button OK, put it up for sale
+                                driver.findElement(By.xpath("//*[@id=\"market_sell_dialog_accept\"]/span")).click();
+                            } else {
+                                // if the price is less than the profitable one, then send an email, if it is profitable (get at least half of the profitPercent), then sell
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void endDriver() {
+        driver.close();
+        driver.quit();
+    }
+
     public void getBuyOrders() {
         driver.get("https://steamcommunity.com/market/");
         for (int i = 2; true; i++){

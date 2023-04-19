@@ -21,10 +21,12 @@ public class Init implements CommandLineRunner {
         System.out.println(LocalDateTime.now());
         seleniumService.startDriver();
         boolean successLogin = seleniumService.login();
-
         if(successLogin){
-            seleniumService.getElementsToBuy();
+//            seleniumService.updateInventory();
+//            seleniumService.sendPurchaseRequests(100f, 200f, 5f);
+            seleniumService.sendSellRequests();
         }
+        seleniumService.endDriver();
         log.info("################## END OF INITIALIZATION ##################");
     }
 

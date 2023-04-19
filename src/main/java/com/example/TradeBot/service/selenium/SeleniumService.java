@@ -6,7 +6,8 @@ public interface SeleniumService {
     void startDriver() throws IOException;
     boolean login() throws InterruptedException, IOException;
     float getBalance();
-    void getElementsToBuy() throws InterruptedException;
+    void sendPurchaseRequests(float startPrice, float endPrice, float profitPercent) throws InterruptedException;
     void updateInventory();
-    void getBuyOrders();
+    void sendSellRequests();
+    void endDriver();
 }

@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface InventoryItemRepository extends JpaRepository<InventoryItem, Long> {
+    InventoryItem findByFullNameAndExterior(String fullName, String exterior);
 }

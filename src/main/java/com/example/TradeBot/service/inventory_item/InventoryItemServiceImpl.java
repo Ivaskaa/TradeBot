@@ -18,4 +18,12 @@ public class InventoryItemServiceImpl implements InventoryItemService {
         inventoryItemRepository.save(inventoryItem);
         log.info("success save inventory item");
     }
+
+    @Override
+    public InventoryItem findInventoryItemByFullNameAndExterior(String fullName, String exterior) {
+        log.info("getting inventory item by full name: {}, end exterior: {}", fullName, exterior);
+        InventoryItem inventoryItem = inventoryItemRepository.findByFullNameAndExterior(fullName, exterior);
+        log.info("success get inventory item by full name end exterior");
+        return inventoryItem;
+    }
 }
