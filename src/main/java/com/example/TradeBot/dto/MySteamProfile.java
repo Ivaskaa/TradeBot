@@ -6,4 +6,5 @@ import lombok.Data;
 public class MySteamProfile {
     private String username;
     private String password;
+    private String profileId;
 }
