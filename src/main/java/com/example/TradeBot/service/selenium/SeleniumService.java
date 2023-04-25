@@ -10,4 +10,5 @@ public interface SeleniumService {
     void updateInventory() throws IOException;
     void sendSellRequests() throws InterruptedException, IOException;
     void endDriver();
+    void getWeaponsPopularity() throws InterruptedException;
 }

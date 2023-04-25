@@ -361,4 +361,93 @@ public class SeleniumServiceImpl implements SeleniumService{
         Thread.sleep(2000);
     }
 
+
+    public void getWeaponsPopularity() throws InterruptedException {
+        for (String weaponTag: WeaponTag.tags4_5percent) {
+            System.out.println(weaponTag);
+            List<Float> coefs = new ArrayList<>();
+            for (int i = 1; true; i++) {
+                boolean isBreak = false;
+                driver.get("https://steamcommunity.com/market/search?q=&category_730_ItemSet%5B%5D=any&category_730_ProPlayer%5B%5D=any&category_730_StickerCapsule%5B%5D=any&category_730_TournamentTeam%5B%5D=any&category_730_Weapon%5B%5D=tag_weapon_" + weaponTag + "&appid=730#p" + i + "_price_asc");
+                Thread.sleep(500);
+                for (int j = 0; j < 10; j++) {
+                    try {
+                        driver.findElement(By.xpath("//*[@id=\"result_" + j + "\"]")).click();
+                        // get users request to buy price
+                        String usersRequestToBuyPriceString = driver.findElement(By.cssSelector("#market_commodity_buyrequests > span:nth-child(2)")).getText();
+                        usersRequestToBuyPriceString = usersRequestToBuyPriceString.replace("₴", "");
+                        usersRequestToBuyPriceString = usersRequestToBuyPriceString.replace(",", ".");
+                        float requestsToBuyAt = Float.parseFloat(usersRequestToBuyPriceString);
+                        if (requestsToBuyAt> 500) {
+                            isBreak = true;
+                        }
+                        System.out.println("requests to buy at:" + requestsToBuyAt);
+                        // get count buy requests of skin
+                        String buyRequestsCountString = driver.findElement(By.xpath("//*[@id=\"market_commodity_buyrequests\"]/span[1]")).getText();
+                        int buyRequestsCount = Integer.parseInt(buyRequestsCountString);
+                        System.out.println("buy requests count: " + buyRequestsCount);
+
+
+
+                        if (isWeaponPopular(requestsToBuyAt, buyRequestsCount, weaponTag)) {
+                            System.out.println("\n\nenough popular\n\n");
+                        }
+                        var price = (requestsToBuyAt * buyRequestsCount)/10000;
+                        System.out.println(price);
+                        coefs.add(price);
+
+                        driver.get("https://steamcommunity.com/market/search?q=&category_730_ItemSet%5B%5D=any&category_730_ProPlayer%5B%5D=any&category_730_StickerCapsule%5B%5D=any&category_730_TournamentTeam%5B%5D=any&category_730_Weapon%5B%5D=tag_weapon_" + weaponTag + "&appid=730#p" + i + "_price_asc");
+                    } catch (Exception ignored){}
+                }
+                if(isBreak) break;
+            }
+            float sum = 0;
+            for (var item: coefs) {
+                sum += item;
+            }
+            System.out.println("\n\nAverage "+ sum/coefs.size() + weaponTag+"\n\n");
+        }
+    }
+
+    public boolean isWeaponPopular(float requestsToBuyAt, int buyRequestsCount, String weaponTag) {
+        float popularIndex = Float.MAX_VALUE;
+        boolean result = false;
+        var price = (requestsToBuyAt * buyRequestsCount)/10000;
+        switch (weaponTag) {
+            case "aug":
+                popularIndex = 144;
+                break;
+            case "awp":
+                popularIndex = 748;
+                break;
+            case "deagle":
+                popularIndex = 342;
+                break;
+            case "famas", "galilar":
+                popularIndex = 150;
+                break;
+            case "m4a1_silencer":
+                popularIndex = 714;
+                break;
+            case "m4a1":
+                popularIndex = 350;
+                break;
+            case "sg556":
+                popularIndex = 152;
+                break;
+            case "ssg08":
+                popularIndex = 192;
+                break;
+            case "ak47":
+                popularIndex = 868;
+                break;
+        }
+
+        if (price > popularIndex) {
+            result = true;
+        }
+
+
+        return result;
+    }
 }
