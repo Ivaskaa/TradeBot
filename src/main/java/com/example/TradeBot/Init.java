@@ -18,13 +18,14 @@ public class Init implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         log.info("################## START OF INITIALIZATION ##################");
-        System.out.println(LocalDateTime.now());
         seleniumService.startDriver();
         boolean successLogin = seleniumService.login();
         if(successLogin){
 //            seleniumService.updateInventory();
-//            seleniumService.sendPurchaseRequests(100f, 200f, 5f);
-            seleniumService.sendSellRequests();
+            seleniumService.sendBuyRequest(100f, 250f, 2f);
+//            seleniumService.updateBuyRequests();
+//            seleniumService.sendSellRequests();
+//            seleniumService.getWeaponsPopularity();
         }
 //        seleniumService.endDriver();
         log.info("################## END OF INITIALIZATION ##################");
