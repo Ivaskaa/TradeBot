@@ -6,8 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-
 @Component
 @Slf4j
 @AllArgsConstructor
@@ -22,7 +20,7 @@ public class Init implements CommandLineRunner {
         boolean successLogin = seleniumService.login();
         if(successLogin){
 //            seleniumService.updateInventory();
-            seleniumService.sendBuyRequest(100f, 250f, 2f);
+            seleniumService.sendBuyRequest(100f, 450f, 2f);
 //            seleniumService.updateBuyRequests();
 //            seleniumService.sendSellRequests();
 //            seleniumService.getWeaponsPopularity();

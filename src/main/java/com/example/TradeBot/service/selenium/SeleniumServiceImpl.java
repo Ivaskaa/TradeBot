@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
@@ -34,6 +35,7 @@ public class SeleniumServiceImpl implements SeleniumService{
     private final ObjectMapper objectMapper;
     private WebDriver driver;
     private final ItemService itemService;
+    private static final int WAIT_TIMEOUT_SECONDS = 5;
 
     public SeleniumServiceImpl(ObjectMapper objectMapper, ItemService itemService) {
         this.objectMapper = objectMapper;
@@ -59,18 +61,22 @@ public class SeleniumServiceImpl implements SeleniumService{
     public boolean login() throws InterruptedException, IOException {
 
         driver.get("https://steamcommunity.com/");
-
         try {
-            new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"global_action_menu\"]/a"))).click();
-            try {
-                driver.findElement(By.cssSelector("#imageLogin")).click();
+            // login button
+            findElementByXPath("//*[@id=\"global_action_menu\"]/a").click();
+            WebElement imageLogin = driver.findElement(By.cssSelector("#imageLogin"));
+            if (imageLogin != null) {
+                imageLogin.click();
                 log.info("success login in profile");
-            } catch (Exception e){
+            } else {
                 File fileSteamProfile = new File(Objects.requireNonNull(this.getClass().getClassLoader().getResource("my_steam_profile.json")).getFile());
                 MySteamProfile mySteamProfile = objectMapper.readValue(fileSteamProfile, MySteamProfile.class);
-                driver.findElement(By.cssSelector("#responsive_page_template_content > div.page_content > div:nth-child(1) > div > div > div > div.newlogindialog_FormContainer_3jLIH > div > form > div:nth-child(1) > input")).sendKeys(mySteamProfile.getUsername());
-                driver.findElement(By.cssSelector("#responsive_page_template_content > div.page_content > div:nth-child(1) > div > div > div > div.newlogindialog_FormContainer_3jLIH > div > form > div:nth-child(2) > input")).sendKeys(mySteamProfile.getPassword());
-                driver.findElement(By.cssSelector("#responsive_page_template_content > div.page_content > div:nth-child(1) > div > div > div > div.newlogindialog_FormContainer_3jLIH > div > form > div.newlogindialog_SignInButtonContainer_14fsn > button")).click();
+                WebElement usernameInput = driver.findElement(By.cssSelector("#responsive_page_template_content > div.page_content > div:nth-child(1) > div > div > div > div.newlogindialog_FormContainer_3jLIH > div > form > div:nth-child(1) > input"));
+                WebElement passwordInput = driver.findElement(By.cssSelector("#responsive_page_template_content > div.page_content > div:nth-child(1) > div > div > div > div.newlogindialog_FormContainer_3jLIH > div > form > div:nth-child(2) > input"));
+                WebElement signInButton = driver.findElement(By.cssSelector("#responsive_page_template_content > div.page_content > div:nth-child(1) > div > div > div > div.newlogindialog_FormContainer_3jLIH > div > form > div.newlogindialog_SignInButtonContainer_14fsn > button"));
+                usernameInput.sendKeys(mySteamProfile.getUsername());
+                passwordInput.sendKeys(mySteamProfile.getPassword());
+                signInButton.click();
                 log.info("need new steam login with authenticator");
                 return false;
             }
@@ -83,10 +89,13 @@ public class SeleniumServiceImpl implements SeleniumService{
     @Override
     public void  sendBuyRequest(float startPrice, float endPrice, float profitPercent) throws InterruptedException {
         for (String weaponTag: WeaponTag.tags4_5percent) {
-            for (int i = 1; true; i++) {
+            System.out.println("--------------------------------------------------------------------------------");
+            System.out.println("weaponTag: " + weaponTag);
+            System.out.println("--------------------------------------------------------------------------------");
+            for (int page = 1; ; page++) {
                 boolean isBreak = false;
-                driver.get("https://steamcommunity.com/market/search?q=&category_730_ItemSet%5B%5D=any&category_730_ProPlayer%5B%5D=any&category_730_StickerCapsule%5B%5D=any&category_730_TournamentTeam%5B%5D=any&category_730_Weapon%5B%5D=tag_weapon_" + weaponTag + "&appid=730#p" + i + "_price_asc");
-                Thread.sleep(500);
+                driver.get("https://steamcommunity.com/market/search?q=&category_730_ItemSet%5B%5D=any&category_730_ProPlayer%5B%5D=any&category_730_StickerCapsule%5B%5D=any&category_730_TournamentTeam%5B%5D=any&category_730_Weapon%5B%5D=tag_weapon_" + weaponTag + "&appid=730#p" + page + "_price_asc");
+                sleep(500);
                 for (int j = 0; j < 10; j++) {
                     String itemPrice;
                     try {
@@ -99,53 +108,51 @@ public class SeleniumServiceImpl implements SeleniumService{
                        isBreak = true;
                        break;
                     }
-                    if (price < startPrice) {
-                        continue;
-                    }
+                    if (price < startPrice) continue;
                     try {
-                        driver.findElement(By.xpath("//*[@id=\"result_" + j + "\"]")).click();
+                        findElementByXPath("//*[@id=\"result_" + j + "\"]").click();
                         // get users last sale price
-                        String usersLastSalePriceString = driver.findElement(By.xpath("//*[@id=\"searchResultsRows\"]/div[" + 2 + "]/div[2]/div[2]/span/span[1]")).getText();
+                        String usersLastSalePriceString = findElementByXPath("//*[@id=\"searchResultsRows\"]/div[" + 2 + "]/div[2]/div[2]/span/span[1]").getText();
                         if(!usersLastSalePriceString.contains("₴")) break;
                         float usersLastSalePrice = getFloat(usersLastSalePriceString);
                         System.out.println("users last sale price:" + usersLastSalePrice);
                         float buyPrice = usersLastSalePrice - (usersLastSalePrice * ((15 + profitPercent) / 100.0f));
                         System.out.println("-15 + profit percent price: " + buyPrice);
                         // click on button view more details
-                        driver.findElement(By.xpath("//*[@id=\"market_buyorder_info_show_details\"]/span")).click();
+                        findElementByXPath("//*[@id=\"market_buyorder_info_show_details\"]/span").click();
                         float averageCheapestPriceOfPurchase = 0f;
                         for(int k = 2; k <= 6; k++){
                             // get cheapest price request
-                            String cheapestPriceOfPurchase = driver.findElement(By.xpath("//*[@id=\"market_commodity_buyreqeusts_table\"]/table/tbody/tr[" + k + "]/td[1]")).getText();
+                            String cheapestPriceOfPurchase = findElementByXPath("//*[@id=\"market_commodity_buyreqeusts_table\"]/table/tbody/tr[" + k + "]/td[1]").getText();
                             averageCheapestPriceOfPurchase = averageCheapestPriceOfPurchase + getFloat(cheapestPriceOfPurchase);
                         }
                         averageCheapestPriceOfPurchase = averageCheapestPriceOfPurchase / 5;
                         System.out.println("requests to buy at:" + averageCheapestPriceOfPurchase);
                         // get count buy requests of skin
-                        String buyRequestsCountString = driver.findElement(By.xpath("//*[@id=\"market_commodity_buyrequests\"]/span[1]")).getText();
+                        String buyRequestsCountString = findElementByXPath("//*[@id=\"market_commodity_buyrequests\"]/span[1]").getText();
                         int buyRequestsCount = Integer.parseInt(buyRequestsCountString);
                         System.out.println("buy requests count: " + buyRequestsCount);
                         System.out.println("------------------------------------------------");
                         if (buyPrice > averageCheapestPriceOfPurchase && buyRequestsCount > 4000) {
                             buyPrice = (buyPrice + averageCheapestPriceOfPurchase) / 2; // average price
-                            buyPrice = buyPrice * 0.97f; // price -3%
-                            String fullName = driver.findElement(By.xpath("//*[@id=\"largeiteminfo_item_name\"]")).getText();
-                            String exterior = driver.findElement(By.xpath("//*[@id=\"largeiteminfo_item_descriptors\"]/div[1]")).getText();
+                            buyPrice = buyPrice * 0.98f; // price -2%
+                            String fullName = findElementByXPath("//*[@id=\"largeiteminfo_item_name\"]").getText();
+                            String exterior = findElementByXPath("//*[@id=\"largeiteminfo_item_descriptors\"]/div[1]").getText();
                             exterior = exterior.replace("Exterior: ", "");
                             if(fullName.contains("Souvenir ")) continue;
                             if(!itemService.isExistByFullNameAndExteriorAndStatusBuyRequest(fullName, exterior)){
                                 // buy logic
                                 // click place buy order button
-                                driver.findElement(By.xpath("//*[@id=\"market_buyorder_info\"]/div[1]/div[1]/a/span")).click();
+                                findElementByXPath("//*[@id=\"market_buyorder_info\"]/div[1]/div[1]/a/span").click();
                                 // clear price in input
-                                driver.findElement(By.xpath("//*[@id=\"market_buy_commodity_input_price\"]")).clear();
+                                findElementByXPath("//*[@id=\"market_buy_commodity_input_price\"]").clear();
                                 // write price in input
-                                driver.findElement(By.xpath("//*[@id=\"market_buy_commodity_input_price\"]")).sendKeys(String.format("%,2f", buyPrice));
+                                findElementByXPath("//*[@id=\"market_buy_commodity_input_price\"]").sendKeys(String.format("%,2f", buyPrice));
                                 try {
                                     // click on checkbox I agree to the terms of the Steam Subscriber Agreement
-                                    driver.findElement(By.xpath("//*[@id=\"market_buyorder_dialog_accept_ssa\"]")).click();
+                                    findElementByXPath("//*[@id=\"market_buyorder_dialog_accept_ssa\"]").click();
                                     // click on place order
-                                    driver.findElement(By.xpath("//*[@id=\"market_buyorder_dialog_purchase\"]/span")).click();
+                                    findElementByXPath("//*[@id=\"market_buyorder_dialog_purchase\"]/span").click();
                                     while (true){
                                         String responseAboutOrder = driver.findElement(By.xpath("//*[@id=\"market_buy_commodity_status\"]")).getText();
                                         if(!responseAboutOrder.equals("Placing buy order...") && !responseAboutOrder.equals("Finding matching item listings at your desired price...")){
@@ -163,11 +170,11 @@ public class SeleniumServiceImpl implements SeleniumService{
                                         }
                                     }
                                     // after success place order click on crosshair
-                                    driver.findElement(By.xpath("/html/body/div[3]/div[2]/div/div[1]")).click();
+                                    findElementByXPath("/html/body/div[3]/div[2]/div/div[1]").click();
                                 } catch (Exception ignored) {}
                             }
                         }
-                        driver.get("https://steamcommunity.com/market/search?q=&category_730_ItemSet%5B%5D=any&category_730_ProPlayer%5B%5D=any&category_730_StickerCapsule%5B%5D=any&category_730_TournamentTeam%5B%5D=any&category_730_Weapon%5B%5D=tag_weapon_" + weaponTag + "&appid=730#p" + i + "_price_asc");
+                        driver.get("https://steamcommunity.com/market/search?q=&category_730_ItemSet%5B%5D=any&category_730_ProPlayer%5B%5D=any&category_730_StickerCapsule%5B%5D=any&category_730_TournamentTeam%5B%5D=any&category_730_Weapon%5B%5D=tag_weapon_" + weaponTag + "&appid=730#p" + page + "_price_asc");
                     } catch (Exception ignored){}
                 }
             if(isBreak) break;
@@ -185,20 +192,20 @@ public class SeleniumServiceImpl implements SeleniumService{
         MySteamProfile mySteamProfile = objectMapper.readValue(fileSteamProfile, MySteamProfile.class);
         driver.get("https://steamcommunity.com/id/" + mySteamProfile.getProfileId() + "/inventory/#730");
         try {
-            driver.findElement(By.xpath("//*[@id=\"inventory_load_error_ctn\"]/div/div/div/div[2]/span")).click();
+            findElementByXPath("//*[@id=\"inventory_load_error_ctn\"]/div/div/div/div[2]/span").click();
             log.info("This inventory is not available at this time. Please try again later.");
         } catch (Exception e){
             Set<Item> items = new HashSet<>();
             for(int i = 1; i <= 25; i++){
                 try {
-                    if(i != 1) driver.findElement(By.xpath("//*[@id=\"inventory_76561198888388607_730_2\"]/div/div[" + i + "]")).click();
-                    Thread.sleep(2000);
+                    if(i != 1) findElementByXPath("//*[@id=\"inventory_76561198888388607_730_2\"]/div/div[" + i + "]").click();
+                    sleep(2000);
                 } catch (Exception ex){
                     break;
                 }
                 for(int j = 0; j <= 1; j++){
                     if(i == 1){ j = 1;}
-                    String exterior = driver.findElement(By.xpath("//*[@id=\"iteminfo" + j + "_item_descriptors\"]/div[1]")).getText();
+                    String exterior = findElementByXPath("//*[@id=\"iteminfo" + j + "_item_descriptors\"]/div[1]").getText();
                     if(exterior.contains("Exterior:")){
                         exterior = exterior.replace("Exterior: ", "");
                     } else {
@@ -211,7 +218,7 @@ public class SeleniumServiceImpl implements SeleniumService{
                     String tradableAfterString;
                     LocalDateTime tradableAfter;
                     try {
-                        tradableAfterString = driver.findElement(By.xpath("//*[@id=\"iteminfo" + j + "_item_owner_descriptors\"]/div[2]")).getText();
+                        tradableAfterString = findElementByXPath("//*[@id=\"iteminfo" + j + "_item_owner_descriptors\"]/div[2]").getText();
                         tradableAfterString = tradableAfterString.replace("Tradable After ", "");
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy (H:mm:ss) z", Locale.ENGLISH);
                         tradableAfter = LocalDateTime.parse(tradableAfterString, formatter);
@@ -246,20 +253,20 @@ public class SeleniumServiceImpl implements SeleniumService{
         MySteamProfile mySteamProfile = objectMapper.readValue(fileSteamProfile, MySteamProfile.class);
         driver.get("https://steamcommunity.com/id/" + mySteamProfile.getProfileId() + "/inventory/#730");
         try {
-            driver.findElement(By.xpath("//*[@id=\"inventory_load_error_ctn\"]/div/div/div/div[2]/span")).click();
+            findElementByXPath("//*[@id=\"inventory_load_error_ctn\"]/div/div/div/div[2]/span").click();
             log.info("This inventory is not available at this time. Please try again later.");
         } catch (Exception e){
             boolean agreeToTermsSteam = false;
             for(int i = 1; i <= 25; i++){
                 try {
-                    if(i != 1) driver.findElement(By.xpath("//*[@id=\"inventory_76561198888388607_730_2\"]/div/div[" + i + "]")).click();
-                    Thread.sleep(2000);
+                    if(i != 1) findElementByXPath("//*[@id=\"inventory_76561198888388607_730_2\"]/div/div[" + i + "]").click();
+                    sleep(2000);
                 } catch (Exception ex){
                     break;
                 }
                 for(int j = 0; j <= 1; j++){
                     if(i == 1){ j = 1;}
-                    String exterior = driver.findElement(By.xpath("//*[@id=\"iteminfo" + j + "_item_descriptors\"]/div[1]")).getText();
+                    String exterior = findElementByXPath("//*[@id=\"iteminfo" + j + "_item_descriptors\"]/div[1]").getText();
                     if(exterior.contains("Exterior:")){
                         exterior = exterior.replace("Exterior: ", "");
                     } else {
@@ -271,7 +278,7 @@ public class SeleniumServiceImpl implements SeleniumService{
                     }
                     String tradableAfterString;
                     try {
-                        tradableAfterString = driver.findElement(By.xpath("//*[@id=\"iteminfo" + j + "_item_owner_descriptors\"]/div[2]")).getText();
+                        tradableAfterString = findElementByXPath("//*[@id=\"iteminfo" + j + "_item_owner_descriptors\"]/div[2]").getText();
                     } catch (Exception exe){
                         tradableAfterString = null;
                     }
@@ -279,39 +286,41 @@ public class SeleniumServiceImpl implements SeleniumService{
                         Item inventoryItem = itemService.findItemByFullNameAndExteriorAndStatus(fullName, exterior, ItemStatus.INVENTORY);
                         if(Objects.nonNull(inventoryItem)){
                             // get starting at price
-                            String textWithStartingAtPrice = driver.findElement(By.xpath("//*[@id=\"iteminfo" + j + "_item_market_actions\"]/div/div[2]")).getText();
-                            int startIndex = textWithStartingAtPrice.indexOf(": ") + 2;
-                            int endIndex = textWithStartingAtPrice.indexOf("₴");
-                            String startingAtPriceString = textWithStartingAtPrice.substring(startIndex, endIndex).replace(",", ".");
-                            float startingAtPrice = Float.parseFloat(startingAtPriceString);
-                            if(startingAtPrice > inventoryItem.getSellPrice()) {
-                                inventoryItem.setSellPrice(startingAtPrice - 0.01f);
+                            String textWithStartingAtPrice = findElementByXPath("//*[@id=\"iteminfo" + j + "_item_market_actions\"]/div/div[2]").getText();
+                            if(!textWithStartingAtPrice.equals("There are no listings currently available for this item.")){
+                                int startIndex = textWithStartingAtPrice.indexOf(": ") + 2;
+                                int endIndex = textWithStartingAtPrice.indexOf("₴");
+                                String startingAtPriceString = textWithStartingAtPrice.substring(startIndex, endIndex).replace(",", ".");
+                                float startingAtPrice = Float.parseFloat(startingAtPriceString);
+                                if(startingAtPrice > inventoryItem.getSellPrice()) {
+                                    inventoryItem.setSellPrice(startingAtPrice - 0.01f);
+                                }
                             }
                             // sell logic
                             // click on button sell
-                            driver.findElement(By.xpath("//*[@id=\"iteminfo" + j + "_item_market_actions\"]/a/span[2]")).click();
+                            findElementByXPath("//*[@id=\"iteminfo" + j + "_item_market_actions\"]/a/span[2]").click();
                             // send sell price
-                            driver.findElement(By.xpath("//*[@id=\"market_sell_buyercurrency_input\"]")).sendKeys(String.format("%,2f", inventoryItem.getSellPrice()));
+                            findElementByXPath("//*[@id=\"market_sell_buyercurrency_input\"]").sendKeys(String.format("%,2f", inventoryItem.getSellPrice()));
                             // get received price
-                            String receivedPriceString = driver.findElement(By.xpath("//*[@id=\"market_sell_currency_input\"]")).getAttribute("value");
+                            String receivedPriceString = findElementByXPath("//*[@id=\"market_sell_currency_input\"]").getAttribute("value");
                             float receivedPrice = getFloat(receivedPriceString);
                             if(!agreeToTermsSteam){
                                 // click on checkbox I agree to the terms of the Steam Subscriber Agreement
-                                driver.findElement(By.xpath("//*[@id=\"market_sell_dialog_accept_ssa\"]")).click();
+                                findElementByXPath("//*[@id=\"market_sell_dialog_accept_ssa\"]").click();
                                 agreeToTermsSteam = true;
                             }
                             // click on button OK, put it up for sale
-                            driver.findElement(By.xpath("//*[@id=\"market_sell_dialog_accept\"]/span")).click();
+                            findElementByXPath("//*[@id=\"market_sell_dialog_accept\"]/span").click();
                             // click on button OK
-                            driver.findElement(By.xpath("//*[@id=\"market_sell_dialog_ok\"]/span")).click();
+                            findElementByXPath("//*[@id=\"market_sell_dialog_ok\"]/span").click();
                             // get response message
                             for (int k = 0; k <= 3;){
                                 try {
                                     // get text from modal window
-                                    String successMessage = driver.findElement(By.xpath("/html/body/div[5]/div[2]/div/div[2]")).getText();
+                                    String successMessage = findElementByXPath("/html/body/div[5]/div[2]/div/div[2]").getText();
                                     if(StringUtils.equalsIgnoreCase(successMessage, "ADDITIONAL CONFIRMATION NEEDED")){
                                         // click on button ok
-                                        driver.findElement(By.xpath("/html/body/div[5]/div[3]/div/div[2]/div/span")).click();
+                                        findElementByXPath("/html/body/div[5]/div[3]/div/div[2]/div/span").click();
                                         // success request
                                         itemService.changeStatusToSellRequest(inventoryItem, receivedPrice);
                                         // send email by success
@@ -319,24 +328,24 @@ public class SeleniumServiceImpl implements SeleniumService{
                                     }
                                 } catch (Exception ignored){}
 
-                                String responseMessage = driver.findElement(By.xpath("//*[@id=\"market_sell_dialog_error\"]")).getText();
+                                String responseMessage = findElementByXPath("//*[@id=\"market_sell_dialog_error\"]").getText();
                                 if(!responseMessage.equals("")){
                                     if(responseMessage.contains("Your listing has not been created. Refresh the page and try again.")){
                                         // click on button OK
-                                        driver.findElement(By.xpath("//*[@id=\"market_sell_dialog_ok\"]/span")).click();
-                                        Thread.sleep(2000);
+                                        findElementByXPath("//*[@id=\"market_sell_dialog_ok\"]/span").click();
+                                        sleep(2000);
                                         k++;
                                         if(k == 3){
                                             // click on crosshair
-                                            driver.findElement(By.xpath("//*[@id=\"market_sell_dialog\"]/div[2]/div/div")).click();
+                                            findElementByXPath("//*[@id=\"market_sell_dialog\"]/div[2]/div/div").click();
                                         }
                                     } else if(responseMessage.contains("Please confirm or cancel the existing listing.")){
                                         // click on crosshair
-                                        driver.findElement(By.xpath("//*[@id=\"market_sell_dialog\"]/div[2]/div/div")).click();
+                                        findElementByXPath("//*[@id=\"market_sell_dialog\"]/div[2]/div/div").click();
                                         break;
                                     } else {
                                         // click on crosshair
-                                        driver.findElement(By.xpath("//*[@id=\"market_sell_dialog\"]/div[2]/div/div")).click();
+                                        findElementByXPath("//*[@id=\"market_sell_dialog\"]/div[2]/div/div").click();
                                         break;
                                     }
                                 }
@@ -351,7 +360,7 @@ public class SeleniumServiceImpl implements SeleniumService{
     @Override
     public void updateBuyRequests() throws InterruptedException {
         driver.get("https://steamcommunity.com/market/");
-        Thread.sleep(500);
+        sleep(500);
         List<Item> databaseItems = itemService.getAllItemsByStatus(ItemStatus.BUY_REQUEST);
         for (int i = 2; true; i++) {
             String fullItemText;
@@ -390,10 +399,10 @@ public class SeleniumServiceImpl implements SeleniumService{
     public void changeSelectToDiscount() throws InterruptedException {
         driver.findElement(By.cssSelector("#layout-page-content-area > div > div > div.MediaQueries_desktop__TwhBE.TradePage_full_height__3Vv16 > div > div.TradePage_content__22N7o > div:nth-child(3) > div.bot-listing_container__1LBz1 > div.MediaQueries_desktop__TwhBE.bot-listing_sorting_and_search_wrapper__3Rn_x > div > button")).click();
         Actions actions = new Actions(driver);
-        Thread.sleep(1000);
+        sleep(1000);
         actions.moveByOffset(1600, 305).perform();
         actions.click().perform();
-        Thread.sleep(2000);
+        sleep(2000);
     }
 
     public void getWeaponsPopularity() throws InterruptedException {
@@ -403,7 +412,7 @@ public class SeleniumServiceImpl implements SeleniumService{
             for (int i = 1; true; i++) {
                 boolean isBreak = false;
                 driver.get("https://steamcommunity.com/market/search?q=&category_730_ItemSet%5B%5D=any&category_730_ProPlayer%5B%5D=any&category_730_StickerCapsule%5B%5D=any&category_730_TournamentTeam%5B%5D=any&category_730_Weapon%5B%5D=tag_weapon_" + weaponTag + "&appid=730#p" + i + "_price_asc");
-                Thread.sleep(500);
+                sleep(500);
                 for (int j = 0; j < 10; j++) {
                     try {
                         driver.findElement(By.xpath("//*[@id=\"result_" + j + "\"]")).click();
@@ -445,6 +454,19 @@ public class SeleniumServiceImpl implements SeleniumService{
         string = string.replace("₴", "");
         string = string.replace(",", ".");
         return Float.parseFloat(string);
+    }
+
+    private WebElement findElementByXPath(String xPath) {
+        return new WebDriverWait(driver, Duration.ofSeconds(WAIT_TIMEOUT_SECONDS))
+                .until(ExpectedConditions.elementToBeClickable(By.xpath(xPath)));
+    }
+
+    private void sleep(int milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     private boolean isWeaponPopular(float requestsToBuyAt, int buyRequestsCount, String weaponTag) {
